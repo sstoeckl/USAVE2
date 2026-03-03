@@ -3,213 +3,478 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>USAVE2 — Understanding Saving in Europe</title>
+  <title>Understanding Saving in Europe (USAVE) — Project Overview</title>
+  <meta name="description" content="USAVE — An Erasmus+ initiative to improve life-cycle saving and investment literacy in Europe via online courses and interactive web applications." />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
-  <meta name="description" content="USAVE2 — Understanding Saving in Europe. An Erasmus+ project providing interactive tools for personal finance literacy." />
+  <style>
+    :root {
+      --brand: #1e73be;
+      --brand-dark: #165a93;
+      --ink: #1f2937;
+    }
+    html { font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans"; }
+    .wp-serif { font-family: Merriweather, Georgia, serif; }
+    .container { max-width: 1100px; }
+  </style>
 </head>
-<body class="bg-gray-50 text-gray-800 font-sans">
+<body class="bg-slate-50 text-slate-900">
 
-  <!-- Header -->
-  <header class="bg-white shadow-sm sticky top-0 z-50">
-    <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
-      <span class="text-lg font-bold text-blue-700">USAVE2</span>
-      <nav class="hidden md:flex gap-6 text-sm font-medium text-gray-600">
-        <a href="#project" class="hover:text-blue-700 transition">Project</a>
-        <a href="#team" class="hover:text-blue-700 transition">Team</a>
-        <a href="#apps" class="hover:text-blue-700 transition">Apps</a>
-        <a href="#contact" class="hover:text-blue-700 transition">Contact</a>
-      </nav>
-    </div>
-  </header>
+<!-- ─── Header ─────────────────────────────────────────────────────── -->
+<header class="border-b bg-white sticky top-0 z-40">
+  <div class="container mx-auto px-4 py-4 flex items-center justify-between">
+    <a href="#" class="text-lg font-bold text-[var(--brand)] hover:text-[var(--brand-dark)] transition">USAVE</a>
+    <nav class="hidden md:flex gap-6 text-sm font-medium text-slate-700">
+      <a href="#about" class="hover:text-[var(--brand)] transition">Project</a>
+      <a href="#team" class="hover:text-[var(--brand)] transition">Team</a>
+      <a href="#outcomes" class="hover:text-[var(--brand)] transition">Outcomes</a>
+      <a href="#events" class="hover:text-[var(--brand)] transition">Events</a>
+      <a href="#apps" class="hover:text-[var(--brand)] transition">Apps</a>
+      <a href="dashboard.html" class="hover:text-[var(--brand)] transition">Dashboard</a>
+      <a href="#contact" class="hover:text-[var(--brand)] transition">Contact</a>
+    </nav>
+  </div>
+</header>
 
-  <!-- Hero -->
-  <section class="bg-gradient-to-br from-blue-700 to-blue-500 text-white py-24 px-4 text-center">
-    <div class="max-w-3xl mx-auto">
-      <h1 class="text-4xl md:text-5xl font-extrabold mb-4 leading-tight">
-        Understanding Saving in Europe
-      </h1>
-      <p class="text-xl md:text-2xl font-light mb-2 opacity-90">USAVE2</p>
-      <p class="text-base md:text-lg opacity-80 mb-8 max-w-xl mx-auto">
-        Interactive tools for personal finance literacy — developed under Erasmus+ to help
-        students and citizens understand saving, investment, and life-cycle planning.
-      </p>
-      <div class="flex flex-col sm:flex-row gap-4 justify-center">
-        <a href="#apps" class="bg-white text-blue-700 font-semibold px-8 py-3 rounded-full shadow hover:shadow-md transition">
-          Explore Apps
-        </a>
-        <a href="dashboard.html" class="border border-white text-white font-semibold px-8 py-3 rounded-full hover:bg-white hover:text-blue-700 transition">
-          Investment Dashboard
-        </a>
-      </div>
-    </div>
-  </section>
+<!-- ─── Hero ───────────────────────────────────────────────────────── -->
+<section class="bg-sky-50/60">
+  <div class="container mx-auto px-4 pt-12 pb-10">
+    <div class="grid md:grid-cols-2 gap-8 items-center">
 
-  <!-- Coming Soon Banner -->
-  <section class="bg-amber-50 border-b border-amber-200 py-4 px-4 text-center text-amber-800 text-sm">
-    <strong>Site under construction.</strong> Full content, apps, and the investment dashboard are coming soon.
-    This is a placeholder page for the USAVE2 Erasmus+ project.
-  </section>
-
-  <!-- Project -->
-  <section id="project" class="py-16 px-4">
-    <div class="max-w-4xl mx-auto">
-      <h2 class="text-3xl font-bold text-blue-700 mb-6">About the Project</h2>
-      <p class="text-gray-700 leading-relaxed mb-4">
-        <strong>USAVE2</strong> ("Understanding Saving in Europe 2") is an
-        <a href="https://erasmus-plus.ec.europa.eu/" class="text-blue-600 hover:underline" target="_blank" rel="noopener">Erasmus+</a>
-        strategic partnership project focused on personal finance literacy. It builds on the
-        success of UNPIE2 (Understanding Pensions in Europe 2) and extends it to the full
-        life-cycle savings decision.
-      </p>
-      <p class="text-gray-700 leading-relaxed mb-4">
-        The project delivers a suite of interactive web applications that allow students and
-        citizens to explore key concepts in personal finance: human capital, optimal consumption
-        smoothing, disability insurance, portfolio construction, and stochastic retirement planning.
-      </p>
-      <div class="mt-6 inline-flex items-center gap-3 bg-blue-50 border border-blue-200 rounded-lg px-5 py-3 text-sm text-blue-800">
-        <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M13 16h-1v-4h-1m1-4h.01M12 2a10 10 0 100 20A10 10 0 0012 2z"/>
-        </svg>
-        <span>Erasmus+ Project ID: <strong>2019-1-LI01-KA203-000125</strong></span>
-      </div>
-    </div>
-  </section>
-
-  <!-- Team -->
-  <section id="team" class="bg-white py-16 px-4">
-    <div class="max-w-4xl mx-auto">
-      <h2 class="text-3xl font-bold text-blue-700 mb-8">Partner Institutions</h2>
-      <div class="grid md:grid-cols-3 gap-8">
-
-        <div class="bg-gray-50 rounded-xl p-6 border border-gray-200">
-          <h3 class="font-bold text-gray-800 mb-1">University of Liechtenstein</h3>
-          <p class="text-sm text-blue-600 font-medium mb-3">Lead Partner</p>
-          <ul class="text-sm text-gray-600 space-y-1">
-            <li>Prof. Dr. Sebastian Stöckl (Coordinator)</li>
-            <li>Prof. Dr. Michael Hanke</li>
-          </ul>
-        </div>
-
-        <div class="bg-gray-50 rounded-xl p-6 border border-gray-200">
-          <h3 class="font-bold text-gray-800 mb-1">Free University of Bozen-Bolzano</h3>
-          <p class="text-sm text-blue-600 font-medium mb-3">Partner — Italy</p>
-          <ul class="text-sm text-gray-600 space-y-1">
-            <li>Prof. Dr. Alex Weissensteiner</li>
-          </ul>
-        </div>
-
-        <div class="bg-gray-50 rounded-xl p-6 border border-gray-200">
-          <h3 class="font-bold text-gray-800 mb-1">Alguru ApS</h3>
-          <p class="text-sm text-blue-600 font-medium mb-3">Partner — Denmark</p>
-          <ul class="text-sm text-gray-600 space-y-1">
-            <li>Emil Ahlmann Østergaard</li>
-          </ul>
-        </div>
-
-      </div>
-    </div>
-  </section>
-
-  <!-- Apps -->
-  <section id="apps" class="py-16 px-4">
-    <div class="max-w-4xl mx-auto">
-      <h2 class="text-3xl font-bold text-blue-700 mb-8">Interactive Apps</h2>
-      <p class="text-gray-600 mb-8">
-        All apps run entirely in your browser using
-        <a href="https://webr.r-wasm.org/" class="text-blue-600 hover:underline" target="_blank" rel="noopener">WebR</a>
-        — no server or installation required.
-      </p>
-
-      <div class="space-y-4">
-
-        <!-- Module 1 -->
-        <div class="bg-white rounded-xl border border-gray-200 p-6">
-          <h3 class="font-bold text-gray-800 mb-2">Module 1 — Human Capital &amp; Life-Cycle Savings</h3>
-          <p class="text-sm text-gray-500 mb-4">Deterministic models of saving and consumption over the lifetime.</p>
-          <div class="grid sm:grid-cols-2 gap-3">
-            <div class="bg-gray-50 rounded-lg p-4 border border-gray-100 opacity-60">
-              <p class="font-medium text-sm text-gray-700">App 1: Human Capital Calculator</p>
-              <p class="text-xs text-gray-500 mt-1">Coming soon</p>
-            </div>
-            <div class="bg-gray-50 rounded-lg p-4 border border-gray-100 opacity-60">
-              <p class="font-medium text-sm text-gray-700">App 2: Optimal Life-Cycle Plan</p>
-              <p class="text-xs text-gray-500 mt-1">Coming soon</p>
-            </div>
-            <div class="bg-gray-50 rounded-lg p-4 border border-gray-100 opacity-60">
-              <p class="font-medium text-sm text-gray-700">App 3: Disability Insurance</p>
-              <p class="text-xs text-gray-500 mt-1">Coming soon</p>
-            </div>
-            <div class="bg-gray-50 rounded-lg p-4 border border-gray-100 opacity-60">
-              <p class="font-medium text-sm text-gray-700">App 4: Epstein-Zin Utility</p>
-              <p class="text-xs text-gray-500 mt-1">Coming soon</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Module 2 -->
-        <div class="bg-white rounded-xl border border-blue-200 p-6 shadow-sm">
-          <h3 class="font-bold text-gray-800 mb-2">Module 2 — Investment Dashboard</h3>
-          <p class="text-sm text-gray-500 mb-4">
-            Explore historical asset class performance, portfolio construction, and risk statistics.
-          </p>
-          <div class="bg-blue-50 rounded-lg p-4 border border-blue-100 opacity-60">
-            <p class="font-medium text-sm text-blue-700">Investment Dashboard (Flagship)</p>
-            <p class="text-xs text-gray-500 mt-1">Coming soon</p>
-          </div>
-        </div>
-
-        <!-- Module 3 -->
-        <div class="bg-white rounded-xl border border-gray-200 p-6">
-          <h3 class="font-bold text-gray-800 mb-2">Module 3 — Stochastic Lifetime Planning</h3>
-          <p class="text-sm text-gray-500 mb-4">Monte Carlo simulations of wealth paths and retirement ruin.</p>
-          <div class="grid sm:grid-cols-2 gap-3">
-            <div class="bg-gray-50 rounded-lg p-4 border border-gray-100 opacity-60">
-              <p class="font-medium text-sm text-gray-700">App 5: Stochastic Wealth Paths</p>
-              <p class="text-xs text-gray-500 mt-1">Coming soon</p>
-            </div>
-            <div class="bg-gray-50 rounded-lg p-4 border border-gray-100 opacity-60">
-              <p class="font-medium text-sm text-gray-700">App 6: Retirement Ruin Probability</p>
-              <p class="text-xs text-gray-500 mt-1">Coming soon</p>
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </section>
-
-  <!-- Footer / Contact -->
-  <footer id="contact" class="bg-gray-800 text-gray-300 py-10 px-4 text-sm">
-    <div class="max-w-4xl mx-auto grid md:grid-cols-3 gap-8">
+      <!-- Left: text -->
       <div>
-        <p class="font-bold text-white mb-2">USAVE2</p>
-        <p class="text-gray-400">Understanding Saving in Europe</p>
-        <p class="text-gray-400 mt-1">Erasmus+ 2019-1-LI01-KA203-000125</p>
-      </div>
-      <div>
-        <p class="font-bold text-white mb-2">Contact</p>
-        <p class="text-gray-400">University of Liechtenstein</p>
-        <p class="text-gray-400">Prof. Dr. Sebastian Stöckl</p>
-        <p class="mt-2">
-          <a href="https://savingineurope.eu" class="text-blue-400 hover:underline" target="_blank" rel="noopener">
-            savingineurope.eu
-          </a>
+        <h1 class="text-3xl md:text-4xl font-semibold leading-tight">
+          Understanding Saving<br>in Europe
+        </h1>
+        <p class="mt-4 text-lg text-slate-700 wp-serif">
+          Interactive tools and online courses for personal finance literacy
+          — helping students and citizens make better life-cycle saving and
+          investment decisions.
         </p>
+        <div class="mt-6 flex flex-wrap gap-3">
+          <a href="#apps"
+             class="inline-flex items-center px-4 py-2 rounded bg-[var(--brand)] text-white font-medium hover:bg-[var(--brand-dark)] transition">
+            Explore Apps
+          </a>
+          <a href="dashboard.html"
+             class="inline-flex items-center px-4 py-2 rounded border border-[var(--brand)] text-[var(--brand)] font-medium hover:bg-[var(--brand)] hover:text-white transition">
+            Investment Dashboard
+          </a>
+        </div>
       </div>
-      <div>
-        <p class="font-bold text-white mb-2">Links</p>
-        <ul class="space-y-1">
-          <li><a href="https://erasmus-plus.ec.europa.eu/" class="text-blue-400 hover:underline" target="_blank" rel="noopener">Erasmus+ Programme</a></li>
-          <li><a href="https://webr.r-wasm.org/" class="text-blue-400 hover:underline" target="_blank" rel="noopener">WebR (R in Browser)</a></li>
-          <li><a href="https://github.com/sstoeckl/USAVE2" class="text-blue-400 hover:underline" target="_blank" rel="noopener">GitHub Repository</a></li>
+
+      <!-- Right: info card -->
+      <div class="rounded-2xl border bg-white shadow-sm p-5">
+        <h3 class="font-semibold">An Erasmus+ initiative for financial literacy</h3>
+        <ul class="mt-4 space-y-2 text-sm text-slate-700">
+          <li>&bull; <strong>Two target groups</strong>: the general public (no prior knowledge) and finance/economics students at higher education institutions</li>
+          <li>&bull; <strong>Online courses</strong>: self-paced MOOCs covering life-cycle saving, human capital, portfolio theory, and retirement planning</li>
+          <li>&bull; <strong>Interactive apps</strong>: browser-based calculators powered by WebR — no installation required</li>
+          <li>&bull; <strong>Three partner institutions</strong> from Liechtenstein, Italy, and Denmark</li>
         </ul>
+        <div class="mt-4 flex items-center gap-3">
+          <span class="text-xs uppercase tracking-wide text-slate-500">Supported by</span>
+          <a href="https://erasmus-plus.ec.europa.eu/" target="_blank" rel="noopener">
+            <img src="assets/logos/erasmus.jpg" alt="Erasmus+" class="h-6 w-auto"
+                 onerror="this.style.display='none'" />
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ─── About / Project ────────────────────────────────────────────── -->
+<section id="about" class="container mx-auto px-4 py-12">
+  <h2 class="text-2xl font-semibold">Project</h2>
+  <div class="mt-6">
+    <div class="rounded-2xl border bg-white shadow-sm p-5">
+      <p class="text-slate-700 leading-relaxed">
+        <strong>USAVE</strong> ("Understanding Saving in Europe") is an
+        <a href="https://erasmus-plus.ec.europa.eu/" class="text-[var(--brand)] hover:underline" target="_blank" rel="noopener">Erasmus+</a>
+        strategic partnership (Project ID: <strong>2019-1-LI01-KA203-000125</strong>) that develops
+        online courses and interactive web applications for life-cycle saving and investment literacy.
+      </p>
+      <p class="mt-4 text-slate-700 leading-relaxed">
+        Optimal life-cycle saving and investment decisions require concepts that go beyond the time value
+        of money and the trade-off between risk and return. Topics include <em>human capital</em>
+        valuation, <em>consumption smoothing</em> over the lifetime, the role of <em>insurance</em>
+        (disability, longevity), <em>portfolio construction</em> with multiple asset classes, and
+        <em>stochastic retirement planning</em> under uncertainty. The project makes these concepts
+        accessible through two self-paced online courses — one for the general public and one for
+        finance/economics students — accompanied by hands-on interactive applications.
+      </p>
+      <p class="mt-4 text-slate-700 leading-relaxed">
+        USAVE builds on the success of <strong>UNPIE</strong> and <strong>UNPIE2</strong>
+        (Understanding Pensions in Europe), extending the scope from pension decisions to the full
+        life-cycle savings problem. It is a collaboration between the
+        <a href="https://www.uni.li" class="text-[var(--brand)] hover:underline" target="_blank" rel="noopener">University of Liechtenstein</a>,
+        the <a href="https://www.unibz.it" class="text-[var(--brand)] hover:underline" target="_blank" rel="noopener">Free University of Bozen-Bolzano</a>,
+        and <strong>Alguru ApS</strong> (Denmark).
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ─── Team & Partners ────────────────────────────────────────────── -->
+<section id="team" class="container mx-auto px-4 py-12">
+  <h2 class="text-2xl font-semibold">Project Team &amp; Partners</h2>
+  <div class="mt-6 grid md:grid-cols-3 gap-6">
+
+    <!-- ULI -->
+    <article class="rounded-2xl border bg-white p-5 shadow-sm">
+      <img src="assets/logos/uli.jpg" alt="University of Liechtenstein" class="h-10 w-auto mb-3"
+           onerror="this.style.display='none'" />
+      <h3 class="font-semibold">University of Liechtenstein</h3>
+      <p class="mt-2 text-sm text-slate-700">
+        Lead partner. Responsible for project coordination, curriculum design, online course
+        development, research, and dissemination.
+      </p>
+      <details class="mt-4 rounded-lg border bg-slate-50">
+        <summary class="cursor-pointer px-4 py-2 font-medium">Show team</summary>
+        <div class="p-4 grid sm:grid-cols-2 gap-4">
+          <div class="flex items-center gap-3 rounded-lg border bg-white p-3">
+            <img src="assets/team/uli/sebastian-stoeckl.jpg" alt="Prof. Dr. Sebastian Stöckl"
+                 class="h-16 w-16 rounded-full object-cover"
+                 onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2264%22 height=%2264%22><rect width=%2264%22 height=%2264%22 fill=%22%23e2e8f0%22/><text x=%2232%22 y=%2236%22 text-anchor=%22middle%22 font-size=%2220%22 fill=%22%2394a3b8%22>SS</text></svg>'" />
+            <div>
+              <h4 class="font-semibold leading-tight">
+                <a href="https://www.uni.li/en/sebastian.stoeckl" class="text-[var(--brand)] hover:underline" target="_blank" rel="noopener">Prof. Dr. Sebastian Stöckl</a>
+              </h4>
+              <p class="text-sm text-slate-600">Project Coordinator</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-3 rounded-lg border bg-white p-3">
+            <img src="assets/team/uli/michael-hanke.jpg" alt="Prof. Dr. Michael Hanke"
+                 class="h-16 w-16 rounded-full object-cover"
+                 onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2264%22 height=%2264%22><rect width=%2264%22 height=%2264%22 fill=%22%23e2e8f0%22/><text x=%2232%22 y=%2236%22 text-anchor=%22middle%22 font-size=%2220%22 fill=%22%2394a3b8%22>MH</text></svg>'" />
+            <div>
+              <h4 class="font-semibold leading-tight">
+                <a href="https://www.uni.li/en/michael.hanke" class="text-[var(--brand)] hover:underline" target="_blank" rel="noopener">Prof. Dr. Michael Hanke</a>
+              </h4>
+              <p class="text-sm text-slate-600">Project Director</p>
+            </div>
+          </div>
+        </div>
+      </details>
+    </article>
+
+    <!-- UniBZ -->
+    <article class="rounded-2xl border bg-white p-5 shadow-sm">
+      <img src="assets/logos/unibz.jpg" alt="Free University of Bozen-Bolzano" class="h-10 w-auto mb-3"
+           onerror="this.style.display='none'" />
+      <h3 class="font-semibold">Free University of Bozen-Bolzano</h3>
+      <p class="mt-2 text-sm text-slate-700">
+        Partner institution in Italy. Contributing to course content, research on life-cycle models,
+        and interactive application design.
+      </p>
+      <details class="mt-4 rounded-lg border bg-slate-50">
+        <summary class="cursor-pointer px-4 py-2 font-medium">Show team</summary>
+        <div class="p-4">
+          <div class="flex items-center gap-3 rounded-lg border bg-white p-3">
+            <img src="assets/team/unibz/alex-weissensteiner.jpg" alt="Prof. Dr. Alex Weissensteiner"
+                 class="h-16 w-16 rounded-full object-cover"
+                 onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2264%22 height=%2264%22><rect width=%2264%22 height=%2264%22 fill=%22%23e2e8f0%22/><text x=%2232%22 y=%2236%22 text-anchor=%22middle%22 font-size=%2220%22 fill=%22%2394a3b8%22>AW</text></svg>'" />
+            <div>
+              <h4 class="font-semibold leading-tight">
+                <a href="https://www.unibz.it/en/faculties/economics-management/academic-staff/person/3264-alex-weissensteiner" class="text-[var(--brand)] hover:underline" target="_blank" rel="noopener">Prof. Dr. Alex Weissensteiner</a>
+              </h4>
+              <p class="text-sm text-slate-600">Partner Lead</p>
+            </div>
+          </div>
+        </div>
+      </details>
+    </article>
+
+    <!-- Alguru -->
+    <article class="rounded-2xl border bg-white p-5 shadow-sm">
+      <img src="assets/logos/alguru.jpg" alt="Alguru ApS" class="h-10 w-auto mb-3"
+           onerror="this.style.display='none'" />
+      <h3 class="font-semibold">Alguru ApS</h3>
+      <p class="mt-2 text-sm text-slate-700">
+        Technology partner in Denmark. Developing the R software packages (<code>usavepkg</code>,
+        <code>usavepkg2</code>) that power the interactive applications.
+      </p>
+      <details class="mt-4 rounded-lg border bg-slate-50">
+        <summary class="cursor-pointer px-4 py-2 font-medium">Show team</summary>
+        <div class="p-4">
+          <div class="flex items-center gap-3 rounded-lg border bg-white p-3">
+            <img src="assets/team/alguru/emil-ostergaard.jpg" alt="Emil Ahlmann Østergaard"
+                 class="h-16 w-16 rounded-full object-cover"
+                 onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2264%22 height=%2264%22><rect width=%2264%22 height=%2264%22 fill=%22%23e2e8f0%22/><text x=%2232%22 y=%2236%22 text-anchor=%22middle%22 font-size=%2220%22 fill=%22%2394a3b8%22>EO</text></svg>'" />
+            <div>
+              <h4 class="font-semibold leading-tight">Emil Ahlmann Østergaard</h4>
+              <p class="text-sm text-slate-600">R Package Developer</p>
+            </div>
+          </div>
+        </div>
+      </details>
+    </article>
+
+  </div>
+</section>
+
+<!-- ─── Outcomes ────────────────────────────────────────────────────── -->
+<section id="outcomes" class="container mx-auto px-4 py-12">
+  <h2 class="text-2xl font-semibold">Outcomes</h2>
+  <div class="mt-6 grid md:grid-cols-2 gap-6">
+    <div class="rounded-2xl border bg-white p-5 shadow-sm">
+      <h3 class="font-semibold">Online Courses (MOOCs)</h3>
+      <p class="mt-2 text-sm text-slate-700">
+        Two self-paced online courses on life-cycle saving and investment decisions, available free of charge:
+      </p>
+      <ul class="mt-3 text-sm text-slate-700 space-y-2">
+        <li>&bull; <strong>Course 1</strong> — for the general public (no prior knowledge required):
+          covers time value of money, human capital, basic savings plans, and the role of insurance.</li>
+        <li>&bull; <strong>Course 2</strong> — for finance/economics students:
+          adds utility theory, consumption smoothing, portfolio optimization, and stochastic planning.</li>
+      </ul>
+    </div>
+    <div class="rounded-2xl border bg-white p-5 shadow-sm">
+      <h3 class="font-semibold">Interactive Web Applications</h3>
+      <p class="mt-2 text-sm text-slate-700">
+        A suite of browser-based calculators and visualizations — powered by
+        <a href="https://webr.r-wasm.org/" class="text-[var(--brand)] hover:underline" target="_blank" rel="noopener">WebR</a>
+        (R compiled to WebAssembly) — enabling hands-on exploration of personal finance concepts:
+      </p>
+      <ul class="mt-3 text-sm text-slate-700 space-y-2">
+        <li>&bull; Human capital valuation and life-cycle consumption planning</li>
+        <li>&bull; Disability insurance and its effect on savings</li>
+        <li>&bull; Historical portfolio analysis (Investment Dashboard)</li>
+        <li>&bull; Stochastic wealth paths and retirement ruin probability</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ─── Events ─────────────────────────────────────────────────────── -->
+<section id="events" class="container mx-auto px-4 py-12">
+  <h2 class="text-2xl font-semibold">Project Events</h2>
+  <div class="mt-6 grid md:grid-cols-2 gap-6">
+
+    <article class="rounded-2xl border bg-white p-5 shadow-sm">
+      <h3 class="font-semibold">Kick-Off Meeting</h3>
+      <p class="mt-2 text-sm text-slate-700">
+        University of Liechtenstein, Vaduz, <span class="whitespace-nowrap">2019</span>.
+        Initial planning meeting to define project scope, work packages, and timeline
+        for the USAVE Erasmus+ partnership.
+      </p>
+      <details class="mt-4 rounded-lg border bg-slate-50">
+        <summary class="cursor-pointer px-4 py-2 font-medium">Details &amp; Photos</summary>
+        <div class="p-4 text-sm text-slate-600">
+          <p>Photos and program details will be added here.</p>
+        </div>
+      </details>
+    </article>
+
+    <article class="rounded-2xl border bg-white p-5 shadow-sm">
+      <h3 class="font-semibold">Partner Meetings</h3>
+      <p class="mt-2 text-sm text-slate-700">
+        Regular working sessions between project partners to coordinate course development,
+        review app prototypes, and plan dissemination activities.
+      </p>
+      <details class="mt-4 rounded-lg border bg-slate-50">
+        <summary class="cursor-pointer px-4 py-2 font-medium">Details &amp; Photos</summary>
+        <div class="p-4 text-sm text-slate-600">
+          <p>Photos and meeting records will be added here.</p>
+        </div>
+      </details>
+    </article>
+
+  </div>
+</section>
+
+<!-- ─── Apps ────────────────────────────────────────────────────────── -->
+<section id="apps" class="container mx-auto px-4 py-12">
+  <h2 class="text-2xl font-semibold">Apps</h2>
+  <p class="mt-2 text-sm text-slate-700">
+    All apps run entirely in your browser using
+    <a href="https://webr.r-wasm.org/" class="text-[var(--brand)] hover:underline" target="_blank" rel="noopener">WebR</a>
+    — no server or installation required. Available in English and German.
+  </p>
+  <div class="mt-6 space-y-4" id="apps-accordion"></div>
+
+  <div class="mt-6 flex flex-wrap gap-3">
+    <a href="apps.html"
+       class="inline-flex items-center px-4 py-2 rounded bg-[var(--brand)] text-white font-medium hover:bg-[var(--brand-dark)] transition">
+      Overview: Explore and Filter all Apps
+    </a>
+    <a href="dashboard.html"
+       class="inline-flex items-center px-4 py-2 rounded border border-[var(--brand)] text-[var(--brand)] font-medium hover:bg-[var(--brand)] hover:text-white transition">
+      Investment Dashboard
+    </a>
+  </div>
+</section>
+
+<!-- App templates (hidden, cloned by JS) -->
+<template id="apps-section">
+  <details class="rounded-2xl border bg-white shadow-sm overflow-hidden">
+    <summary class="px-5 py-4 cursor-pointer font-semibold bg-white hover:bg-slate-50 flex items-center justify-between">
+      <span class="section-title"></span>
+      <span class="text-slate-500 text-sm">(click to expand)</span>
+    </summary>
+    <div class="p-5 bg-white">
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 section-grid"></div>
+    </div>
+  </details>
+</template>
+
+<template id="app-card">
+  <article class="rounded-2xl border bg-white shadow-sm overflow-hidden flex flex-col">
+    <div class="aspect-[16/9] bg-slate-100 flex items-center justify-center" data-aspect>
+      <img class="w-full h-full object-cover hidden" alt="App screenshot" />
+      <div class="text-slate-400 text-sm" data-placeholder>(Screenshot coming soon)</div>
+    </div>
+    <div class="p-5 flex-1 flex flex-col">
+      <h3 class="font-semibold leading-snug"></h3>
+      <p class="mt-2 text-sm text-slate-700 flex-1"></p>
+      <div class="mt-4 flex gap-2 text-sm">
+        <a class="px-3 py-1 rounded-lg bg-[var(--brand)] text-white hover:bg-[var(--brand-dark)] transition" target="_blank" rel="noopener">English</a>
+        <a class="px-3 py-1 rounded-lg bg-slate-900 text-white hover:bg-slate-800 transition" target="_blank" rel="noopener">Deutsch</a>
       </div>
     </div>
-    <div class="max-w-4xl mx-auto mt-8 pt-6 border-t border-gray-700 text-center text-gray-500 text-xs">
-      © 2024 USAVE2 Consortium. Co-funded by the Erasmus+ Programme of the European Union.
+  </article>
+</template>
+
+<!-- ─── Contact ────────────────────────────────────────────────────── -->
+<section id="contact" class="container mx-auto px-4 py-12">
+  <h2 class="text-2xl font-semibold">Contact</h2>
+  <div class="mt-4 text-slate-700 space-y-1">
+    <div><strong>Liechtenstein Business School</strong>, University of Liechtenstein</div>
+    <div>Fürst-Franz-Josef-Strasse, 9490 Vaduz, Liechtenstein</div>
+    <div>
+      Project Director: <a href="https://www.uni.li/en/michael.hanke" class="text-[var(--brand)] hover:underline" target="_blank" rel="noopener">Prof. Dr. Michael Hanke</a>
+      &nbsp;&bull;&nbsp;
+      Project Coordinator: <a href="https://www.uni.li/en/sebastian.stoeckl" class="text-[var(--brand)] hover:underline" target="_blank" rel="noopener">Prof. Dr. Sebastian Stöckl</a>
     </div>
-  </footer>
+    <div class="text-sm text-slate-500">
+      <a href="https://savingineurope.eu" class="text-[var(--brand)] hover:underline" target="_blank" rel="noopener">savingineurope.eu</a>
+    </div>
+  </div>
+</section>
+
+<!-- ─── Footer ─────────────────────────────────────────────────────── -->
+<footer class="border-t py-8 text-sm text-slate-600">
+  <div class="container mx-auto px-4 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+    <p>&copy; 2025 Understanding Saving in Europe (USAVE). All rights reserved.</p>
+    <p>
+      Supported by
+      <a href="https://erasmus-plus.ec.europa.eu/" class="text-[var(--brand)] hover:underline" target="_blank" rel="noopener">Erasmus+</a>
+      and partner institutions. Logos and trademarks are property of their respective owners.
+    </p>
+  </div>
+</footer>
+
+<!-- ─── Apps JS ─────────────────────────────────────────────────────── -->
+<script>
+const BASE = "https://www.sebastianstoeckl.com/usave2";
+
+const APP_SECTIONS = [
+  {
+    title: "Module 1 — Human Capital & Life-Cycle Savings",
+    items: [
+      {
+        id: "usave1",
+        title: "App 1: Human Capital Calculator",
+        desc: "Given salary, growth rate, discount rate, and retirement age — compute the present value of all future labor income (human capital) and visualize the discounted income schedule.",
+        thumb: "usave1.png"
+      },
+      {
+        id: "usave2",
+        title: "App 2: Optimal Life-Cycle Plan (Model 1)",
+        desc: "Deterministic optimal consumption, savings, and financial capital path over the lifetime using constant-growth preferences. Shows how smoothing consumption creates value.",
+        thumb: "usave2.png"
+      },
+      {
+        id: "usave3",
+        title: "App 3: Disability Insurance",
+        desc: "Extends the life-cycle plan with a disability event. Shows how insurance protects consumption smoothing and why it adds economic value even for healthy individuals.",
+        thumb: "usave3.png"
+      },
+      {
+        id: "usave4",
+        title: "App 4: Epstein-Zin Utility (Model 2)",
+        desc: "Optimal consumption under Epstein-Zin preferences. Explore how risk aversion (theta) and patience (beta) independently shape the optimal consumption path.",
+        thumb: "usave4.png"
+      }
+    ]
+  },
+  {
+    title: "Module 2 — Investment Dashboard",
+    items: [
+      {
+        id: "dashboard",
+        title: "Investment Dashboard",
+        desc: "Select portfolio weights across 5 asset classes, choose a date range (1926–2020), and compare your portfolio against benchmarks. View cumulative growth, annual return histograms, rolling statistics, and a full risk/return table.",
+        thumb: "dashboard.png"
+      }
+    ]
+  },
+  {
+    title: "Module 3 — Stochastic Lifetime Planning",
+    items: [
+      {
+        id: "usave5",
+        title: "App 5: Stochastic Wealth Paths",
+        desc: "Given personal parameters and portfolio weights, visualize a fan chart of possible wealth paths over your lifetime — showing percentile bands (5th, 25th, median, 75th, 95th) from 500 Monte Carlo scenarios.",
+        thumb: "usave5.png"
+      },
+      {
+        id: "usave6",
+        title: "App 6: Retirement Ruin Probability",
+        desc: "Given spending level, retirement wealth, and portfolio allocation — compute the probability of running out of money and the distribution of years to ruin.",
+        thumb: "usave6.png"
+      }
+    ]
+  }
+];
+
+(function renderApps() {
+  const acc = document.getElementById('apps-accordion');
+  const secTmpl = document.getElementById('apps-section');
+  const cardTmpl = document.getElementById('app-card');
+
+  APP_SECTIONS.forEach(function(section) {
+    var s = secTmpl.content.cloneNode(true);
+    s.querySelector('.section-title').textContent = section.title;
+    var grid = s.querySelector('.section-grid');
+
+    section.items.forEach(function(app) {
+      var node = cardTmpl.content.cloneNode(true);
+      var img = node.querySelector('img');
+      var title = node.querySelector('h3');
+      var desc = node.querySelector('p');
+      var links = node.querySelectorAll('a');
+      var aEn = links[0], aDe = links[1];
+
+      title.textContent = app.title;
+      desc.textContent = app.desc;
+
+      var page = BASE + '/' + app.id + '.html';
+      aEn.href = page + '?lang=en';
+      aDe.href = page + '?lang=de';
+
+      if (app.thumb) {
+        img.src = BASE + '/assets/screenshots/' + app.thumb;
+        img.alt = app.title + ' — screenshot';
+        img.classList.remove('hidden');
+        var ph = node.querySelector('[data-placeholder]');
+        if (ph) ph.classList.add('hidden');
+        img.onerror = function() {
+          this.classList.add('hidden');
+          var placeholder = this.parentElement.querySelector('[data-placeholder]');
+          if (placeholder) placeholder.classList.remove('hidden');
+        };
+      }
+
+      grid.appendChild(node);
+    });
+
+    acc.appendChild(s);
+  });
+})();
+</script>
 
 </body>
 </html>
