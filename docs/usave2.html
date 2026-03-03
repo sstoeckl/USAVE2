@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>USAVE – App 2: Optimal Life-Cycle Plan</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+html,body{height:100%;margin:0}
+body{overflow:hidden;font-family:system-ui,"Segoe UI",Arial,sans-serif;background:#fff;color:#111}
+.app-shell{max-width:1120px;width:min(1120px,calc(100% - 16px));margin:10px auto;border:1px solid #d9d9df;border-radius:10px;background:#fff;padding:6px;display:grid;grid-template-rows:auto min-content;row-gap:18px;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+.app{height:auto;min-height:0}
+.wrap{max-width:100%;margin:0;padding:8px 12px;height:100%;box-sizing:border-box}
+.title{text-align:center;margin:4px 0 8px;font-size:1.15rem}
+.grid{display:grid;grid-template-columns:320px 1fr;gap:12px;height:calc(100% - 38px)}
+@media(max-width:900px){.grid{grid-template-columns:1fr}}
+.panel{border:1px solid #e8e8e8;border-radius:12px;box-shadow:0 1px 2px rgba(0,0,0,.04);background:#fff}
+.left{padding:10px;overflow:auto}
+.right{padding:10px;display:flex;flex-direction:column;height:100%;overflow:hidden}
+.group{border:1px solid #ddd;border-radius:10px;padding:10px;margin-bottom:10px}
+.group h3{margin:0 0 8px;font-size:.95rem}
+.row{display:flex;align-items:center;gap:.8rem}
+.row+.row{margin-top:8px}
+.val{width:6.5rem;text-align:right;color:#666;font-variant-numeric:tabular-nums;font-size:.9rem}
+input[type=range]{width:100%}
+button{padding:.55rem .9rem;border:0;border-radius:10px;background:#eee;cursor:pointer;font-size:.95rem}
+button:hover{background:#ddd}
+.tabs{display:flex;gap:4px;margin-bottom:8px;flex:0 0 auto}
+.tab{padding:.4rem .7rem;border:1px solid #ddd;border-radius:8px;background:#f7f7f9;cursor:pointer;font-size:.85rem}
+.tab.active{background:#1e73be;color:#fff;border-color:#1e73be}
+.stats{display:flex;gap:10px;justify-content:center;margin-bottom:8px;flex:0 0 auto;flex-wrap:wrap}
+.stat{background:#f7f7f9;border-radius:10px;padding:.4rem .6rem;font-variant-numeric:tabular-nums;font-size:.85rem}
+.chartWrap{flex:1 0 auto;min-height:260px}
+#chart{width:100%;height:100%}
+.legend{display:flex;gap:.8rem;justify-content:center;margin-top:6px;color:#666;font-size:.85rem;flex:0 0 auto;flex-wrap:wrap}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:.3rem;vertical-align:middle}
+.debug{margin-top:6px;background:#f7f7f9;border-radius:10px;padding:6px;overflow:auto;flex:0 0 110px;display:none}
+pre{margin:0;font-size:.82rem}
+.app-shell__footer{justify-self:end;align-self:end;font-size:.75rem;color:#666;white-space:nowrap}
+@media(max-width:480px){.app-shell{width:calc(100% - 10px);padding:4px;row-gap:4px;border-radius:8px}}
+.spinner-overlay{position:fixed;inset:0;background:rgba(255,255,255,.92);display:flex;align-items:center;justify-content:center;z-index:999;flex-direction:column;gap:12px}
+.spinner-overlay .ring{width:48px;height:48px;border:4px solid #e0e0e0;border-top-color:#1e73be;border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+
+<div class="spinner-overlay" id="spinner">
+  <div class="ring"></div>
+  <div id="spinnerMsg">Loading WebR…</div>
+</div>
+
+<div class="app-shell">
+<div class="app"><div class="wrap">
+  <div class="title" id="title">App 2: Optimal Life-Cycle Plan</div>
+  <div class="grid">
+
+    <!-- LEFT: Controls -->
+    <div class="panel left">
+      <div class="group">
+        <h3 id="gAge">Age &amp; Horizon</h3>
+        <div class="row"><label for="currentAge" style="flex:1" id="lCA">Current age</label>
+          <input id="currentAge" type="range" min="18" max="55" step="1" value="25"><div class="val" id="caLbl">25</div></div>
+        <div class="row"><label for="retAge" style="flex:1" id="lRA">Retirement age</label>
+          <input id="retAge" type="range" min="55" max="75" step="1" value="65"><div class="val" id="raLbl">65</div></div>
+        <div class="row"><label for="deathAge" style="flex:1" id="lDA">Life expectancy</label>
+          <input id="deathAge" type="range" min="70" max="100" step="1" value="90"><div class="val" id="daLbl">90</div></div>
+      </div>
+      <div class="group">
+        <h3 id="gIncome">Income</h3>
+        <div class="row"><label for="salary" style="flex:1" id="lSal">Annual salary</label>
+          <input id="salary" type="range" min="10000" max="200000" step="1000" value="50000"><div class="val" id="salLbl">50,000</div></div>
+        <div class="row"><label for="salGrowth" style="flex:1" id="lSG">Salary growth</label>
+          <input id="salGrowth" type="range" min="0" max="0.05" step="0.001" value="0.01"><div class="val" id="sgLbl">1.0%</div></div>
+        <div class="row"><label for="finCap" style="flex:1" id="lFC">Initial savings</label>
+          <input id="finCap" type="range" min="0" max="100000" step="1000" value="3000"><div class="val" id="fcLbl">3,000</div></div>
+      </div>
+      <div class="group">
+        <h3 id="gPref">Preferences</h3>
+        <div class="row"><label for="discRate" style="flex:1" id="lDR">Discount rate</label>
+          <input id="discRate" type="range" min="0" max="0.08" step="0.001" value="0.03"><div class="val" id="drLbl">3.0%</div></div>
+        <div class="row"><label for="consGrowth" style="flex:1" id="lCG">Consumption growth</label>
+          <input id="consGrowth" type="range" min="0" max="0.05" step="0.001" value="0.01"><div class="val" id="cgLbl">1.0%</div></div>
+      </div>
+      <button id="compute" style="width:100%">Compute</button>
+    </div>
+
+    <!-- RIGHT: Chart & Stats -->
+    <div class="panel right">
+      <div class="stats">
+        <div class="stat"><strong id="sOC">Opt. Consumption:</strong> <span id="ocOut">—</span></div>
+        <div class="stat"><strong id="sHC">Human Capital:</strong> <span id="hcOut">—</span></div>
+        <div class="stat"><strong id="sENW">Econ. Net Worth:</strong> <span id="enwOut">—</span></div>
+      </div>
+      <div class="tabs">
+        <div class="tab active" data-tab="flows" id="tabFlows">Cash Flows</div>
+        <div class="tab" data-tab="capital" id="tabCapital">Capital</div>
+      </div>
+      <div class="chartWrap"><canvas id="chart"></canvas></div>
+      <div class="legend" id="legendBox"></div>
+      <div class="debug" id="debugBox"><pre id="debug">Waiting…</pre></div>
+    </div>
+
+  </div>
+</div></div>
+<div class="app-shell__footer">&copy; 2025 by Dr. S. Stöckl</div>
+</div>
+
+<script type="module">
+import { WebR } from "https://webr.r-wasm.org/latest/webr.mjs";
+
+const params = new URLSearchParams(location.search);
+const lang = (params.get("lang") || "en").toLowerCase();
+const debugMode = (params.get("debug") || "").toUpperCase() === "TRUE";
+
+const I18N = {
+  en: {
+    title:"App 2: Optimal Life-Cycle Plan",
+    gAge:"Age & Horizon", lCA:"Current age", lRA:"Retirement age", lDA:"Life expectancy",
+    gIncome:"Income", lSal:"Annual salary", lSG:"Salary growth", lFC:"Initial savings",
+    gPref:"Preferences", lDR:"Discount rate", lCG:"Consumption growth",
+    btn:"Compute",
+    sOC:"Opt. Consumption:", sHC:"Human Capital:", sENW:"Econ. Net Worth:",
+    tabFlows:"Cash Flows", tabCapital:"Capital",
+    salary:"Salary", consumption:"Consumption", savings:"Savings",
+    finCap:"Financial Capital", humCap:"Human Capital", enw:"Econ. Net Worth",
+    xLabel:"Age", yLabel:"Amount"
+  },
+  de: {
+    title:"App 2: Optimaler Lebenszyklus-Plan",
+    gAge:"Alter & Horizont", lCA:"Aktuelles Alter", lRA:"Rentenalter", lDA:"Lebenserwartung",
+    gIncome:"Einkommen", lSal:"Jahresgehalt", lSG:"Gehaltswachstum", lFC:"Anfangskapital",
+    gPref:"Präferenzen", lDR:"Diskontierungssatz", lCG:"Konsumwachstum",
+    btn:"Berechnen",
+    sOC:"Opt. Konsum:", sHC:"Humankapital:", sENW:"Ökon. Nettovermögen:",
+    tabFlows:"Zahlungsströme", tabCapital:"Kapital",
+    salary:"Gehalt", consumption:"Konsum", savings:"Ersparnisse",
+    finCap:"Finanzkapital", humCap:"Humankapital", enw:"Ökon. Nettovermögen",
+    xLabel:"Alter", yLabel:"Betrag"
+  }
+};
+const T = I18N[lang] || I18N.en;
+["title","gAge","lCA","lRA","lDA","gIncome","lSal","lSG","lFC",
+ "gPref","lDR","lCG","sOC","sHC","sENW","tabFlows","tabCapital"
+].forEach(id => { const el = document.getElementById(id); if (el) el.textContent = T[id]; });
+document.getElementById("compute").textContent = T.btn;
+
+document.getElementById("debugBox").style.display = debugMode ? "block" : "none";
+const dbg = document.getElementById("debug");
+const log = x => { if (debugMode) dbg.textContent = typeof x === "string" ? x : JSON.stringify(x, null, 2); };
+
+function unwrap(x) {
+  if (x == null || typeof x !== "object") return x;
+  if (x.type === "list") { const o = {}; (x.names || []).forEach((k, i) => o[k] = unwrap(x.values[i])); return o; }
+  if (Array.isArray(x.values)) return x.values.length === 1 ? unwrap(x.values[0]) : x.values.map(unwrap);
+  return x;
+}
+const num = x => typeof x === "number" ? x : (x?.values ? x.values[0] : Array.isArray(x) ? x[0] : NaN);
+const arr = x => Array.isArray(x) ? x.map(Number) : (x?.values ? x.values.map(Number) : []);
+const fmt = (x, o = {}) => Number(x).toLocaleString(undefined, { maximumFractionDigits: 0, ...o });
+
+/* ── Slider refs ────────────────────────────────────────────────── */
+const caEl = document.getElementById("currentAge");
+const raEl = document.getElementById("retAge");
+const daEl = document.getElementById("deathAge");
+const salEl = document.getElementById("salary");
+const sgEl = document.getElementById("salGrowth");
+const fcEl = document.getElementById("finCap");
+const drEl = document.getElementById("discRate");
+const cgEl = document.getElementById("consGrowth");
+
+function refresh() {
+  document.getElementById("caLbl").textContent = caEl.value;
+  document.getElementById("raLbl").textContent = raEl.value;
+  document.getElementById("daLbl").textContent = daEl.value;
+  document.getElementById("salLbl").textContent = fmt(salEl.value);
+  document.getElementById("sgLbl").textContent = (parseFloat(sgEl.value) * 100).toFixed(1) + "%";
+  document.getElementById("fcLbl").textContent = fmt(fcEl.value);
+  document.getElementById("drLbl").textContent = (parseFloat(drEl.value) * 100).toFixed(1) + "%";
+  document.getElementById("cgLbl").textContent = (parseFloat(cgEl.value) * 100).toFixed(1) + "%";
+}
+
+/* ── Chart ──────────────────────────────────────────────────────── */
+const ctx = document.getElementById("chart").getContext("2d");
+const chart = new Chart(ctx, {
+  type: "line",
+  data: { labels: [], datasets: [] },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    interaction: { mode: "index", intersect: false },
+    scales: {
+      x: { title: { display: true, text: T.xLabel }, ticks: { maxTicksLimit: 15 } },
+      y: { title: { display: true, text: T.yLabel }, ticks: { callback: v => fmt(v) } }
+    },
+    plugins: { legend: { display: false } },
+    elements: { point: { radius: 0 }, line: { tension: 0.15 } }
+  }
+});
+
+/* ── Tab switching ──────────────────────────────────────────────── */
+let currentTab = "flows";
+let lastResult = null;
+document.querySelectorAll(".tab").forEach(tab => {
+  tab.addEventListener("click", () => {
+    document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+    tab.classList.add("active");
+    currentTab = tab.dataset.tab;
+    if (lastResult) drawChart(lastResult);
+  });
+});
+
+const COLORS = {
+  salary: "#1e73be", consumption: "#e53935", savings: "#43a047",
+  finCap: "#ff9800", humCap: "#1e73be", enw: "#9e9e9e"
+};
+
+function setLegend(items) {
+  const box = document.getElementById("legendBox");
+  box.innerHTML = items.map(([c, label]) =>
+    `<span><span class="dot" style="background:${c}"></span>${label}</span>`
+  ).join("");
+}
+
+function drawChart(js) {
+  const ages = arr(js.results.ages).map(String);
+  chart.data.labels = ages;
+  if (currentTab === "flows") {
+    chart.data.datasets = [
+      { label: T.salary, data: arr(js.results.salaryCalc), borderColor: COLORS.salary, borderWidth: 2, fill: false },
+      { label: T.consumption, data: arr(js.results.consumptionCalc), borderColor: COLORS.consumption, borderWidth: 2, fill: false },
+      { label: T.savings, data: arr(js.results.savingsCalc), borderColor: COLORS.savings, borderWidth: 2, fill: false }
+    ];
+    setLegend([[COLORS.salary, T.salary], [COLORS.consumption, T.consumption], [COLORS.savings, T.savings]]);
+  } else {
+    chart.data.datasets = [
+      { label: T.finCap, data: arr(js.results.financialCapitalP), borderColor: COLORS.finCap, backgroundColor: "rgba(255,152,0,.1)", fill: true, borderWidth: 2 },
+      { label: T.humCap, data: arr(js.results.humanCapitalP), borderColor: COLORS.humCap, backgroundColor: "rgba(30,115,190,.1)", fill: true, borderWidth: 2 },
+      { label: T.enw, data: arr(js.results.economicNetWorthP), borderColor: COLORS.enw, borderDash: [6, 3], borderWidth: 2, fill: false }
+    ];
+    setLegend([[COLORS.finCap, T.finCap], [COLORS.humCap, T.humCap], [COLORS.enw, T.enw]]);
+  }
+  chart.update();
+}
+
+/* ── WebR init ──────────────────────────────────────────────────── */
+const spinnerMsg = document.getElementById("spinnerMsg");
+const webr = new WebR();
+
+async function init() {
+  log("Starting WebR…");
+  spinnerMsg.textContent = "Initializing WebR…";
+  await webr.init();
+  spinnerMsg.textContent = "Loading R functions…";
+  const code = await (await fetch("./r/usave2.R")).text();
+  await webr.evalR(code);
+  log("WebR ready.");
+}
+
+async function compute() {
+  try {
+    refresh();
+    const ca = +caEl.value, ra = +raEl.value, da = +daEl.value;
+    const sal = +salEl.value, sg = +sgEl.value, fc = +fcEl.value;
+    const dr = +drEl.value, cg = +cgEl.value;
+    if (ca >= ra || ra >= da) return;
+    if (Math.abs(dr - cg) < 0.0001) return; // avoid div by zero in model1
+    const r = await webr.evalR(
+      `usave2(currentAge=${ca}, retirementAge=${ra}, deathAge=${da}, salary=${sal}, salaryGrowth=${sg}, discountRate=${dr}, consumptionGrowth=${cg}, financialCapital=${fc})`
+    );
+    let js = await r.toJs(); if (js && js.type) js = unwrap(js);
+    lastResult = js;
+    document.getElementById("ocOut").textContent = fmt(num(js?.results?.optimalConsumption));
+    document.getElementById("hcOut").textContent = fmt(num(js?.results?.humanCapital));
+    document.getElementById("enwOut").textContent = fmt(num(js?.results?.economicNetWorth));
+    drawChart(js);
+    log(js);
+  } catch (e) { log("Compute error: " + (e?.message || e)); }
+}
+
+document.getElementById("compute").addEventListener("click", compute);
+[caEl, raEl, daEl, salEl, sgEl, fcEl, drEl, cgEl].forEach(el => el.addEventListener("input", compute));
+await init();
+document.getElementById("spinner").style.display = "none";
+await compute();
+</script>
+</body>
+</html>

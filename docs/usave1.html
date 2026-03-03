@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>USAVE – App 1: Human Capital Calculator</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+html,body{height:100%;margin:0}
+body{overflow:hidden;font-family:system-ui,"Segoe UI",Arial,sans-serif;background:#fff;color:#111}
+.app-shell{max-width:1120px;width:min(1120px,calc(100% - 16px));margin:10px auto;border:1px solid #d9d9df;border-radius:10px;background:#fff;padding:6px;display:grid;grid-template-rows:auto min-content;row-gap:18px;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+.app{height:auto;min-height:0}
+.wrap{max-width:100%;margin:0;padding:8px 12px;height:100%;box-sizing:border-box}
+.title{text-align:center;margin:4px 0 8px;font-size:1.15rem}
+.grid{display:grid;grid-template-columns:320px 1fr;gap:12px;height:calc(100% - 38px)}
+@media(max-width:900px){.grid{grid-template-columns:1fr}}
+.panel{border:1px solid #e8e8e8;border-radius:12px;box-shadow:0 1px 2px rgba(0,0,0,.04);background:#fff}
+.left{padding:10px;overflow:auto}
+.right{padding:10px;display:flex;flex-direction:column;height:100%;overflow:hidden}
+.group{border:1px solid #ddd;border-radius:10px;padding:10px;margin-bottom:10px}
+.group h3{margin:0 0 8px;font-size:1rem}
+.row{display:flex;align-items:center;gap:.8rem}
+.row+.row{margin-top:8px}
+.val{width:7rem;text-align:right;color:#666;font-variant-numeric:tabular-nums}
+input[type=range]{width:100%}
+button{padding:.55rem .9rem;border:0;border-radius:10px;background:#eee;cursor:pointer;font-size:.95rem}
+button:hover{background:#ddd}
+.stats{display:flex;gap:10px;justify-content:center;margin-bottom:8px;flex:0 0 auto;flex-wrap:wrap}
+.stat{background:#f7f7f9;border-radius:10px;padding:.45rem .7rem;font-variant-numeric:tabular-nums;font-size:.9rem}
+.chartWrap{flex:1 0 auto;min-height:280px}
+#chart{width:100%;height:100%}
+.legend{display:flex;gap:1rem;justify-content:center;margin-top:6px;color:#666;font-size:.92rem;flex:0 0 auto;flex-wrap:wrap}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:.35rem;vertical-align:middle}
+.debug{margin-top:6px;background:#f7f7f9;border-radius:10px;padding:6px;overflow:auto;flex:0 0 110px;display:none}
+pre{margin:0;font-size:.82rem}
+.app-shell__footer{justify-self:end;align-self:end;font-size:.75rem;color:#666;white-space:nowrap}
+@media(max-width:480px){.app-shell{width:calc(100% - 10px);padding:4px;row-gap:4px;border-radius:8px}}
+.spinner-overlay{position:fixed;inset:0;background:rgba(255,255,255,.92);display:flex;align-items:center;justify-content:center;z-index:999;flex-direction:column;gap:12px}
+.spinner-overlay .ring{width:48px;height:48px;border:4px solid #e0e0e0;border-top-color:#1e73be;border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+
+<!-- Loading spinner -->
+<div class="spinner-overlay" id="spinner">
+  <div class="ring"></div>
+  <div id="spinnerMsg">Loading WebR…</div>
+</div>
+
+<div class="app-shell">
+<div class="app"><div class="wrap">
+  <div class="title" id="title">App 1: Human Capital Calculator</div>
+  <div class="grid">
+
+    <!-- LEFT: Controls -->
+    <div class="panel left">
+      <div class="group">
+        <h3 id="gSalary">Salary</h3>
+        <div class="row">
+          <label for="salary" style="flex:1" id="lSalary">Annual after-tax</label>
+          <input id="salary" type="range" min="10000" max="200000" step="1000" value="50000">
+          <div class="val" id="salaryLabel">50,000</div>
+        </div>
+        <div class="row">
+          <label for="growth" style="flex:1" id="lGrowth">Annual growth</label>
+          <input id="growth" type="range" min="0" max="0.05" step="0.001" value="0.02">
+          <div class="val" id="growthLabel">2.0%</div>
+        </div>
+      </div>
+      <div class="group">
+        <h3 id="gDiscount">Valuation</h3>
+        <div class="row">
+          <label for="discount" style="flex:1" id="lDiscount">Discount rate</label>
+          <input id="discount" type="range" min="0" max="0.10" step="0.001" value="0.03">
+          <div class="val" id="discountLabel">3.0%</div>
+        </div>
+      </div>
+      <div class="group">
+        <h3 id="gAge">Age</h3>
+        <div class="row">
+          <label for="currentAge" style="flex:1" id="lCurrentAge">Current age</label>
+          <input id="currentAge" type="range" min="18" max="60" step="1" value="25">
+          <div class="val" id="currentAgeLabel">25</div>
+        </div>
+        <div class="row">
+          <label for="retirementAge" style="flex:1" id="lRetAge">Retirement age</label>
+          <input id="retirementAge" type="range" min="50" max="75" step="1" value="65">
+          <div class="val" id="retirementAgeLabel">65</div>
+        </div>
+      </div>
+      <button id="compute" style="width:100%">Compute</button>
+    </div>
+
+    <!-- RIGHT: Chart & Stats -->
+    <div class="panel right">
+      <div class="stats">
+        <div class="stat"><strong id="sHC">Human Capital:</strong> <span id="hcOut">—</span></div>
+      </div>
+      <div class="chartWrap"><canvas id="chart"></canvas></div>
+      <div class="legend">
+        <span><span class="dot" style="background:#1e73be"></span><span id="legIncome">Labor Income</span></span>
+        <span><span class="dot" style="background:#ff9800"></span><span id="legDisc">Discounted Income</span></span>
+        <span><span class="dot" style="background:#9e9e9e"></span><span id="legHC">Human Capital</span></span>
+      </div>
+      <div class="debug" id="debugBox"><pre id="debug">Waiting…</pre></div>
+    </div>
+
+  </div>
+</div></div>
+<div class="app-shell__footer">&copy; 2025 by Dr. S. Stöckl</div>
+</div>
+
+<script type="module">
+import { WebR } from "https://webr.r-wasm.org/latest/webr.mjs";
+
+/* ── URL params ─────────────────────────────────────────────────── */
+const params = new URLSearchParams(location.search);
+const lang = (params.get("lang") || "en").toLowerCase();
+const debugMode = (params.get("debug") || "").toUpperCase() === "TRUE";
+
+/* ── i18n ───────────────────────────────────────────────────────── */
+const I18N = {
+  en: {
+    title:"App 1: Human Capital Calculator",
+    gSalary:"Salary", lSalary:"Annual after-tax", lGrowth:"Annual growth",
+    gDiscount:"Valuation", lDiscount:"Discount rate",
+    gAge:"Age", lCurrentAge:"Current age", lRetAge:"Retirement age",
+    btn:"Compute", sHC:"Human Capital:",
+    legIncome:"Labor Income", legDisc:"Discounted Income", legHC:"Human Capital",
+    xLabel:"Age", yLabel:"Amount"
+  },
+  de: {
+    title:"App 1: Humankapital-Rechner",
+    gSalary:"Gehalt", lSalary:"Jährlich netto", lGrowth:"Jährliches Wachstum",
+    gDiscount:"Bewertung", lDiscount:"Diskontierungssatz",
+    gAge:"Alter", lCurrentAge:"Aktuelles Alter", lRetAge:"Rentenalter",
+    btn:"Berechnen", sHC:"Humankapital:",
+    legIncome:"Arbeitseinkommen", legDisc:"Diskontiertes Einkommen", legHC:"Humankapital",
+    xLabel:"Alter", yLabel:"Betrag"
+  }
+};
+const T = I18N[lang] || I18N.en;
+["title","gSalary","lSalary","lGrowth","gDiscount","lDiscount",
+ "gAge","lCurrentAge","lRetAge","sHC","legIncome","legDisc","legHC"
+].forEach(id => { const el = document.getElementById(id); if (el) el.textContent = T[id]; });
+document.getElementById("compute").textContent = T.btn;
+
+/* ── Debug ──────────────────────────────────────────────────────── */
+document.getElementById("debugBox").style.display = debugMode ? "block" : "none";
+const dbg = document.getElementById("debug");
+const log = x => { if (debugMode) dbg.textContent = typeof x === "string" ? x : JSON.stringify(x, null, 2); };
+
+/* ── Helpers ────────────────────────────────────────────────────── */
+function unwrap(x) {
+  if (x == null || typeof x !== "object") return x;
+  if (x.type === "list") { const o = {}; (x.names || []).forEach((k, i) => o[k] = unwrap(x.values[i])); return o; }
+  if (Array.isArray(x.values)) return x.values.length === 1 ? unwrap(x.values[0]) : x.values.map(unwrap);
+  return x;
+}
+const num = x => typeof x === "number" ? x : (x && x.values ? x.values[0] : Array.isArray(x) ? x[0] : NaN);
+const arr = x => Array.isArray(x) ? x.map(Number) : (x && x.values ? x.values.map(Number) : []);
+const fmt = (x, o = {}) => Number(x).toLocaleString(undefined, { maximumFractionDigits: 0, ...o });
+
+/* ── DOM refs ───────────────────────────────────────────────────── */
+const salaryEl = document.getElementById("salary");
+const growthEl = document.getElementById("growth");
+const discountEl = document.getElementById("discount");
+const currentAgeEl = document.getElementById("currentAge");
+const retAgeEl = document.getElementById("retirementAge");
+
+function refresh() {
+  document.getElementById("salaryLabel").textContent = fmt(salaryEl.value);
+  document.getElementById("growthLabel").textContent = (parseFloat(growthEl.value) * 100).toFixed(1) + "%";
+  document.getElementById("discountLabel").textContent = (parseFloat(discountEl.value) * 100).toFixed(1) + "%";
+  document.getElementById("currentAgeLabel").textContent = currentAgeEl.value;
+  document.getElementById("retirementAgeLabel").textContent = retAgeEl.value;
+}
+
+/* ── Chart ──────────────────────────────────────────────────────── */
+const ctx = document.getElementById("chart").getContext("2d");
+const chart = new Chart(ctx, {
+  type: "line",
+  data: { labels: [], datasets: [] },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    interaction: { mode: "index", intersect: false },
+    scales: {
+      x: { title: { display: true, text: T.xLabel }, ticks: { maxTicksLimit: 12 } },
+      y: { beginAtZero: true, title: { display: true, text: T.yLabel }, ticks: { callback: v => fmt(v) } }
+    },
+    plugins: { legend: { display: false } },
+    elements: { point: { radius: 0 }, line: { tension: 0.15 } }
+  }
+});
+
+/* ── WebR init ──────────────────────────────────────────────────── */
+const spinnerMsg = document.getElementById("spinnerMsg");
+const webr = new WebR();
+
+async function init() {
+  log("Starting WebR…");
+  spinnerMsg.textContent = "Initializing WebR…";
+  await webr.init();
+  spinnerMsg.textContent = "Loading R functions…";
+  const code = await (await fetch("./r/usave1.R")).text();
+  await webr.evalR(code);
+  log("WebR ready.");
+}
+
+/* ── Compute ────────────────────────────────────────────────────── */
+async function compute() {
+  try {
+    refresh();
+    const s = +salaryEl.value, g = +growthEl.value, d = +discountEl.value;
+    const ca = parseInt(currentAgeEl.value, 10), ra = parseInt(retAgeEl.value, 10);
+    if (ca >= ra) return;
+    const r = await webr.evalR(`usave1(salary=${s}, growth=${g}, discount=${d}, currentAge=${ca}, retirementAge=${ra})`);
+    let js = await r.toJs(); if (js && js.type) js = unwrap(js);
+    const ages = arr(js?.results?.ages);
+    const income = arr(js?.results?.laborincome);
+    const discIncome = arr(js?.results?.disc_laborincome);
+    const hcAges = arr(js?.results?.hcAges);
+    const hcVals = arr(js?.results?.humanCapitals);
+    const hc = num(js?.results?.humanCapital);
+    document.getElementById("hcOut").textContent = fmt(hc);
+    chart.data.labels = hcAges.map(String);
+    chart.data.datasets = [
+      { label: T.legIncome, data: income.concat(Array(hcAges.length - ages.length).fill(null)),
+        borderColor: "#1e73be", backgroundColor: "rgba(30,115,190,.08)", fill: true, borderWidth: 2 },
+      { label: T.legDisc, data: discIncome.concat(Array(hcAges.length - ages.length).fill(null)),
+        borderColor: "#ff9800", backgroundColor: "rgba(255,152,0,.08)", fill: true, borderWidth: 2 },
+      { label: T.legHC, data: hcVals,
+        borderColor: "#9e9e9e", borderDash: [6, 3], borderWidth: 2, fill: false }
+    ];
+    chart.update();
+    log(js);
+  } catch (e) { log("Compute error: " + (e?.message || e)); }
+}
+
+/* ── Events & start ─────────────────────────────────────────────── */
+document.getElementById("compute").addEventListener("click", compute);
+[salaryEl, growthEl, discountEl, currentAgeEl, retAgeEl].forEach(el => el.addEventListener("input", compute));
+await init();
+document.getElementById("spinner").style.display = "none";
+await compute();
+</script>
+</body>
+</html>
