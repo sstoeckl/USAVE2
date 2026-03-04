@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>USAVE – App 4: Epstein-Zin Utility</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script type="module" src="https://webr.r-wasm.org/latest/webr.mjs"></script>
 <style>
 html,body{height:100%;margin:0}
 body{overflow:hidden;font-family:system-ui,"Segoe UI",Arial,sans-serif;background:#fff;color:#111}
@@ -18,22 +19,21 @@ body{overflow:hidden;font-family:system-ui,"Segoe UI",Arial,sans-serif;backgroun
 .left{padding:10px;overflow:auto}
 .right{padding:10px;display:flex;flex-direction:column;height:100%;overflow:hidden}
 .group{border:1px solid #ddd;border-radius:10px;padding:10px;margin-bottom:10px}
-.group h3{margin:0 0 8px;font-size:.95rem}
+.group h3{margin:0 0 8px;font-size:1rem}
 .row{display:flex;align-items:center;gap:.8rem}
 .row+.row{margin-top:8px}
-.val{width:6.5rem;text-align:right;color:#666;font-variant-numeric:tabular-nums;font-size:.9rem}
+.val{width:7rem;text-align:right;color:#666;font-variant-numeric:tabular-nums}
 input[type=range]{width:100%}
-button{padding:.55rem .9rem;border:0;border-radius:10px;background:#eee;cursor:pointer;font-size:.95rem}
-button:hover{background:#ddd}
+button{padding:.55rem .9rem;border:0;border-radius:10px;background:#eee;cursor:pointer}
 .tabs{display:flex;gap:4px;margin-bottom:8px;flex:0 0 auto}
 .tab{padding:.4rem .7rem;border:1px solid #ddd;border-radius:8px;background:#f7f7f9;cursor:pointer;font-size:.85rem}
 .tab.active{background:#1e73be;color:#fff;border-color:#1e73be}
 .stats{display:flex;gap:10px;justify-content:center;margin-bottom:8px;flex:0 0 auto;flex-wrap:wrap}
-.stat{background:#f7f7f9;border-radius:10px;padding:.4rem .6rem;font-variant-numeric:tabular-nums;font-size:.85rem}
-.chartWrap{flex:1 0 auto;min-height:260px}
+.stat{background:#f7f7f9;border-radius:10px;padding:.45rem .7rem;font-variant-numeric:tabular-nums}
+.chartWrap{flex:1 0 auto;height:320px}
 #chart{width:100%;height:100%}
-.legend{display:flex;gap:.8rem;justify-content:center;margin-top:6px;color:#666;font-size:.85rem;flex:0 0 auto;flex-wrap:wrap}
-.dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:.3rem;vertical-align:middle}
+.legend{display:flex;gap:1rem;justify-content:center;margin-top:6px;color:#666;font-size:.92rem;flex:0 0 auto;flex-wrap:wrap}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:.35rem;vertical-align:middle}
 .debug{margin-top:6px;background:#f7f7f9;border-radius:10px;padding:6px;overflow:auto;flex:0 0 110px;display:none}
 pre{margin:0;font-size:.82rem}
 .app-shell__footer{justify-self:end;align-self:end;font-size:.75rem;color:#666;white-space:nowrap}

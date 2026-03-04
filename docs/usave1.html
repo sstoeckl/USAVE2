@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>USAVE – App 1: Human Capital Calculator</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script type="module" src="https://webr.r-wasm.org/latest/webr.mjs"></script>
 <style>
 html,body{height:100%;margin:0}
 body{overflow:hidden;font-family:system-ui,"Segoe UI",Arial,sans-serif;background:#fff;color:#111}
@@ -23,11 +24,10 @@ body{overflow:hidden;font-family:system-ui,"Segoe UI",Arial,sans-serif;backgroun
 .row+.row{margin-top:8px}
 .val{width:7rem;text-align:right;color:#666;font-variant-numeric:tabular-nums}
 input[type=range]{width:100%}
-button{padding:.55rem .9rem;border:0;border-radius:10px;background:#eee;cursor:pointer;font-size:.95rem}
-button:hover{background:#ddd}
+button{padding:.55rem .9rem;border:0;border-radius:10px;background:#eee;cursor:pointer}
 .stats{display:flex;gap:10px;justify-content:center;margin-bottom:8px;flex:0 0 auto;flex-wrap:wrap}
-.stat{background:#f7f7f9;border-radius:10px;padding:.45rem .7rem;font-variant-numeric:tabular-nums;font-size:.9rem}
-.chartWrap{flex:1 0 auto;min-height:280px}
+.stat{background:#f7f7f9;border-radius:10px;padding:.45rem .7rem;font-variant-numeric:tabular-nums}
+.chartWrap{flex:1 0 auto;height:320px}
 #chart{width:100%;height:100%}
 .legend{display:flex;gap:1rem;justify-content:center;margin-top:6px;color:#666;font-size:.92rem;flex:0 0 auto;flex-wrap:wrap}
 .dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:.35rem;vertical-align:middle}
