@@ -9,8 +9,8 @@
 <style>
 html,body{height:100%;margin:0}
 body{overflow:hidden;font-family:system-ui,"Segoe UI",Arial,sans-serif;background:#fff;color:#111}
-.app-shell{max-width:1120px;width:min(1120px,calc(100% - 16px));margin:10px auto;border:1px solid #d9d9df;border-radius:10px;background:#fff;padding:6px;display:grid;grid-template-rows:auto min-content;row-gap:18px;box-shadow:0 1px 2px rgba(0,0,0,.04)}
-.app{height:auto;min-height:0}
+.app-shell{max-width:1120px;width:min(1120px,calc(100% - 16px));max-height:700px;margin:10px auto;border:1px solid #d9d9df;border-radius:10px;background:#fff;padding:6px;display:grid;grid-template-rows:1fr min-content;row-gap:18px;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+.app{height:100%;min-height:0;overflow:hidden}
 .wrap{max-width:100%;margin:0;padding:8px 12px;height:100%;box-sizing:border-box}
 .title{text-align:center;margin:4px 0 8px;font-size:1.15rem}
 .grid{display:grid;grid-template-columns:320px 1fr;gap:12px;height:calc(100% - 38px)}
@@ -19,7 +19,11 @@ body{overflow:hidden;font-family:system-ui,"Segoe UI",Arial,sans-serif;backgroun
 .left{padding:10px;overflow:auto}
 .right{padding:10px;display:flex;flex-direction:column;height:100%;overflow:hidden}
 .group{border:1px solid #ddd;border-radius:10px;padding:10px;margin-bottom:10px}
-.group h3{margin:0 0 8px;font-size:1rem}
+.group h3{margin:0 0 8px;font-size:1rem;cursor:pointer;user-select:none}
+.group h3::after{content:'\25BE';float:right;font-size:.8rem;color:#999;transition:transform .2s}
+.group.collapsed h3{margin-bottom:0}
+.group.collapsed h3::after{content:'\25B8'}
+.group.collapsed .group-body{display:none}
 .row{display:flex;align-items:center;gap:.8rem}
 .row+.row{margin-top:8px}
 .val{width:7rem;text-align:right;color:#666;font-variant-numeric:tabular-nums}
@@ -58,37 +62,45 @@ pre{margin:0;font-size:.82rem}
     <div class="panel left">
       <div class="group">
         <h3 id="gAge">Age &amp; Horizon</h3>
+        <div class="group-body">
         <div class="row"><label for="currentAge" style="flex:1" id="lCA">Current age</label>
           <input id="currentAge" type="range" min="18" max="45" step="1" value="25"><div class="val" id="caLbl">25</div></div>
         <div class="row"><label for="retAge" style="flex:1" id="lRA">Retirement age</label>
           <input id="retAge" type="range" min="55" max="75" step="1" value="65"><div class="val" id="raLbl">65</div></div>
         <div class="row"><label for="deathAge" style="flex:1" id="lDA">Life expectancy</label>
           <input id="deathAge" type="range" min="70" max="100" step="1" value="90"><div class="val" id="daLbl">90</div></div>
+        </div>
       </div>
       <div class="group">
         <h3 id="gIncome">Income</h3>
+        <div class="group-body">
         <div class="row"><label for="salary" style="flex:1" id="lSal">Annual salary</label>
           <input id="salary" type="range" min="10000" max="200000" step="1000" value="50000"><div class="val" id="salLbl">50,000</div></div>
         <div class="row"><label for="salGrowth" style="flex:1" id="lSG">Salary growth</label>
           <input id="salGrowth" type="range" min="0" max="0.05" step="0.001" value="0.01"><div class="val" id="sgLbl">1.0%</div></div>
         <div class="row"><label for="finCap" style="flex:1" id="lFC">Initial savings</label>
           <input id="finCap" type="range" min="0" max="100000" step="1000" value="3000"><div class="val" id="fcLbl">3,000</div></div>
+        </div>
       </div>
       <div class="group">
         <h3 id="gPref">Preferences</h3>
+        <div class="group-body">
         <div class="row"><label for="discRate" style="flex:1" id="lDR">Discount rate</label>
           <input id="discRate" type="range" min="0" max="0.08" step="0.001" value="0.03"><div class="val" id="drLbl">3.0%</div></div>
         <div class="row"><label for="consGrowth" style="flex:1" id="lCG">Consumption growth</label>
           <input id="consGrowth" type="range" min="0" max="0.05" step="0.001" value="0.01"><div class="val" id="cgLbl">1.0%</div></div>
+        </div>
       </div>
       <div class="group" style="border-color:#e53935">
         <h3 id="gDis" style="color:#e53935">Disability Event</h3>
+        <div class="group-body">
         <div class="row"><label for="disAge" style="flex:1" id="lDisAge">Disability age</label>
           <input id="disAge" type="range" min="25" max="64" step="1" value="45"><div class="val" id="disAgeLbl">45</div></div>
         <div class="row"><label for="coverage" style="flex:1" id="lCov">Coverage (% salary)</label>
           <input id="coverage" type="range" min="0" max="1" step="0.05" value="0.8"><div class="val" id="covLbl">80%</div></div>
         <div class="row"><label for="insFee" style="flex:1" id="lFee">Insurance premium</label>
           <input id="insFee" type="range" min="0" max="0.05" step="0.001" value="0.01"><div class="val" id="feeLbl">1.0%</div></div>
+        </div>
       </div>
       <button id="compute" style="width:100%">Compute</button>
     </div>
@@ -248,6 +260,12 @@ function drawChart(js) {
   }
   chart.update();
 }
+
+/* ── Collapsible groups ─────────────────────────────────────────── */
+document.querySelectorAll('.group h3').forEach(h3 => {
+  h3.addEventListener('click', () => h3.closest('.group').classList.toggle('collapsed'));
+});
+document.querySelectorAll('.group').forEach((g, i) => { if (i >= 2) g.classList.add('collapsed'); });
 
 const spinnerMsg = document.getElementById("spinnerMsg");
 const webr = new WebR();
