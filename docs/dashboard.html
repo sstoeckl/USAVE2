@@ -1,0 +1,501 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>USAVE – Investment Dashboard</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+html,body{height:100%;margin:0}
+body{overflow:hidden;font-family:system-ui,"Segoe UI",Arial,sans-serif;background:#fff;color:#111}
+.app-shell{max-width:1200px;width:min(1200px,calc(100% - 16px));height:min(700px,calc(100vh - 20px));margin:10px auto;border:1px solid #d9d9df;border-radius:10px;background:#fff;padding:6px;display:grid;grid-template-rows:minmax(0,1fr) min-content;row-gap:4px;box-shadow:0 1px 2px rgba(0,0,0,.04);box-sizing:border-box;overflow:hidden}
+.app{height:100%;min-height:0;overflow:hidden}
+.wrap{max-width:100%;margin:0;padding:4px 8px;height:100%;box-sizing:border-box;display:flex;flex-direction:column}
+.title{text-align:center;margin:2px 0 6px;font-size:1.15rem;flex:0 0 auto}
+.grid{display:grid;grid-template-columns:330px minmax(0,1fr);gap:10px;flex:1 1 auto;min-height:0}
+.panel{border:1px solid #e8e8e8;border-radius:12px;box-shadow:0 1px 2px rgba(0,0,0,.04);background:#fff;min-height:0}
+.left{padding:8px;overflow:auto}
+.right{padding:8px;display:flex;flex-direction:column;overflow:auto}
+.group{border:1px solid #ddd;border-radius:10px;padding:8px 10px;margin-bottom:8px}
+.group:last-child{margin-bottom:0}
+.group h3{margin:0 0 6px;font-size:.95rem}
+.row{display:flex;align-items:center;gap:.5rem;font-size:.86rem}
+.row+.row{margin-top:5px}
+.row label.name{flex:0 0 118px}
+.val{width:3.2rem;text-align:right;color:#666;font-variant-numeric:tabular-nums;flex:0 0 auto}
+input[type=range]{flex:1 1 auto;min-width:0;width:100%}
+input[type=range]:disabled{opacity:.4}
+select{flex:1 1 auto;min-width:0;padding:.2rem;border:1px solid #ccc;border-radius:6px;background:#fff;font:inherit}
+.check{display:flex;align-items:center;gap:.45rem;font-size:.86rem;cursor:pointer}
+.check+.check{margin-top:4px}
+.check.spaced{margin-top:6px}
+button{padding:.3rem .7rem;border:1px solid #ccc;border-radius:8px;background:#f7f7f9;cursor:pointer;font:inherit;font-size:.8rem}
+button:hover{background:#ececf1}
+.tabsRow{display:flex;gap:8px;align-items:center;flex:0 0 auto;margin-bottom:6px;flex-wrap:wrap}
+.tabs{display:flex;gap:4px;flex-wrap:wrap}
+.tab{padding:.32rem .6rem;border:1px solid #ddd;border-radius:8px;background:#f7f7f9;cursor:pointer;font:inherit;font-size:.82rem;color:#111}
+.tab:hover{background:#ececf1}
+.tab.active{background:#1e73be;color:#fff;border-color:#1e73be}
+.tabsRow .check{margin-left:auto}
+.chartWrap{position:relative;flex:1 1 0;min-height:215px}
+.chartMsg{position:absolute;inset:0;display:none;align-items:center;justify-content:center;text-align:center;color:#666;padding:0 2rem}
+.legend{display:flex;gap:.3rem 1rem;justify-content:center;margin:4px 0;color:#555;font-size:.82rem;flex:0 0 auto;flex-wrap:wrap}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:.3rem;vertical-align:middle}
+.statsHead{display:flex;align-items:center;justify-content:space-between;gap:8px;flex:0 0 auto;margin-top:2px}
+.note{font-size:.74rem;color:#666}
+.tableWrap{overflow-x:auto;flex:0 0 auto;margin-top:3px}
+table{width:100%;border-collapse:collapse;font-size:.82rem;font-variant-numeric:tabular-nums}
+th,td{padding:2px 8px;text-align:right;border-bottom:1px solid #eee;white-space:nowrap}
+th:first-child,td:first-child{text-align:left}
+thead th{border-bottom:1px solid #ccc;font-weight:600}
+td.better{background:#e6f4ea;color:#14642b}
+td.worse{background:#fdecea;color:#a12622}
+.dataNote{flex:0 0 auto;margin-top:4px}
+.debug{margin-top:6px;background:#f7f7f9;border-radius:10px;padding:6px;overflow:auto;flex:0 0 90px;display:none}
+pre{margin:0;font-size:.78rem}
+.app-shell__footer{justify-self:end;align-self:end;font-size:.72rem;color:#666;white-space:nowrap}
+.spinner-overlay{position:fixed;inset:0;background:rgba(255,255,255,.92);display:flex;align-items:center;justify-content:center;z-index:999;flex-direction:column;gap:12px;text-align:center;padding:0 1rem}
+.spinner-overlay .ring{width:48px;height:48px;border:4px solid #e0e0e0;border-top-color:#1e73be;border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media(max-width:900px){
+  html,body{height:auto}
+  body{overflow:auto}
+  .app-shell{height:auto;overflow:visible}
+  .app,.wrap{height:auto;overflow:visible}
+  .grid{grid-template-columns:minmax(0,1fr)}
+  .left,.right{overflow:visible}
+  .chartWrap{flex:none;height:300px}
+}
+@media(max-width:480px){.app-shell{width:calc(100% - 10px);padding:4px;border-radius:8px}}
+@media(prefers-reduced-motion:reduce){.spinner-overlay .ring{animation:none}}
+</style>
+</head>
+<body>
+
+<div class="spinner-overlay" id="spinner">
+  <div class="ring" id="spinnerRing"></div>
+  <div id="spinnerMsg">Loading WebR…</div>
+</div>
+
+<div class="app-shell">
+<div class="app"><div class="wrap">
+  <div class="title" id="title">Investment Dashboard</div>
+  <div class="grid">
+
+    <div class="panel left">
+      <div class="group">
+        <h3 id="gWeights">Portfolio Weights</h3>
+        <div id="weightRows"></div>
+        <label class="check spaced"><input type="checkbox" id="useCash" checked><span id="lCash">Include cash (T-Bills)</span></label>
+      </div>
+      <div class="group">
+        <h3 id="gSettings">Settings</h3>
+        <div class="row"><label class="name" for="startYear" id="lStart">Start year</label><select id="startYear"></select></div>
+        <div class="row"><label class="name" for="endYear" id="lEnd">End year</label><select id="endYear"></select></div>
+        <div class="row"><label class="name" for="rebalance" id="lReb">Rebalancing</label>
+          <select id="rebalance">
+            <option value="months" id="oMonths">Monthly</option>
+            <option value="quarters" id="oQuarters">Quarterly</option>
+            <option value="years" id="oYears">Annually</option>
+          </select></div>
+        <div class="row"><label class="name" for="cost" id="lCost">Transaction cost</label>
+          <input id="cost" type="range" min="0" max="0.02" step="0.0005" value="0"><div class="val" id="costLbl">0.00%</div></div>
+        <label class="check spaced"><input type="checkbox" id="real"><span id="lReal">Inflation-adjusted (real) returns</span></label>
+        <label class="check"><input type="checkbox" id="riskAdjust"><span id="lRisk">Scale charts to my portfolio's risk</span></label>
+      </div>
+      <div class="group">
+        <h3 id="gBench">Benchmarks</h3>
+        <label class="check"><input type="checkbox" id="useLarge" checked><span id="lLarge">100% Large Stocks</span></label>
+        <label class="check"><input type="checkbox" id="useSixty" checked><span id="lSixty">60/40 (Large Stocks / Govt Bonds)</span></label>
+        <label class="check"><input type="checkbox" id="useEqual" checked><span id="lEqual">Equal Weight</span></label>
+      </div>
+    </div>
+
+    <div class="panel right">
+      <div class="tabsRow">
+        <div class="tabs" role="tablist">
+          <button class="tab active" data-tab="growth" id="tabGrowth">Growth of 100</button>
+          <button class="tab" data-tab="hist" id="tabHist">Annual Returns</button>
+          <button class="tab" data-tab="rollReturn" id="tabRollReturn">Rolling 5Y Return</button>
+          <button class="tab" data-tab="rollSharpe" id="tabRollSharpe">Rolling 5Y Sharpe</button>
+          <button class="tab" data-tab="frontier" id="tabFrontier">Efficient Frontier</button>
+        </div>
+        <label class="check" id="logWrap"><input type="checkbox" id="logScale" checked><span id="lLog">Log scale</span></label>
+      </div>
+      <div class="chartWrap"><canvas id="chart"></canvas><div class="chartMsg" id="chartMsg"></div></div>
+      <div class="legend" id="legendBox"></div>
+      <div class="statsHead">
+        <span class="note" id="tableNote"></span>
+        <button id="csv">Export CSV</button>
+      </div>
+      <div class="tableWrap"><table id="stats"></table></div>
+      <div class="note dataNote" id="dataNote"></div>
+      <div class="debug" id="debugBox"><pre id="debug">Waiting…</pre></div>
+    </div>
+
+  </div>
+</div></div>
+<div class="app-shell__footer">&copy; 2025 by Dr. S. Stöckl</div>
+</div>
+
+<script type="module">
+import { WebR } from "https://webr.r-wasm.org/latest/webr.mjs";
+
+const params = new URLSearchParams(location.search);
+const lang = (params.get("lang") || "en").toLowerCase() === "de" ? "de" : "en";
+const debugMode = (params.get("debug") || "").toUpperCase() === "TRUE";
+const locale = lang === "de" ? "de-DE" : "en-US";
+document.documentElement.lang = lang;
+
+const I18N = {
+  en: {
+    title:"Investment Dashboard", gWeights:"Portfolio Weights", lCash:"Include cash (T-Bills)",
+    gSettings:"Settings", lStart:"Start year", lEnd:"End year", lReb:"Rebalancing",
+    oMonths:"Monthly", oQuarters:"Quarterly", oYears:"Annually", lCost:"Transaction cost",
+    lReal:"Inflation-adjusted (real) returns", lRisk:"Scale charts to my portfolio's risk",
+    gBench:"Benchmarks", lLarge:"100% Large Stocks", lSixty:"60/40 (Large Stocks / Govt Bonds)", lEqual:"Equal Weight",
+    tabGrowth:"Growth of 100", tabHist:"Annual Returns", tabRollReturn:"Rolling 5Y Return",
+    tabRollSharpe:"Rolling 5Y Sharpe", tabFrontier:"Efficient Frontier", lLog:"Log scale", csv:"Export CSV",
+    assets:["Large Stocks","Small Stocks","Corporate Bonds","Govt Bonds","T-Bills"],
+    names:{custom:"Your Portfolio",large:"100% Stocks",sixty:"60/40",equal:"Equal Weight"},
+    statistic:"Statistic",
+    stats:{annReturn:"Annualized Return",annSd:"Annualized Volatility",sharpe:"Sharpe Ratio (vs T-Bills)",maxDD:"Maximum Drawdown",var95:"Monthly VaR (95%)",skew:"Skewness",kurt:"Excess Kurtosis"},
+    better:"Green / ▲: better than your portfolio. Red / ▼: worse.",
+    scaledNote:" The table always uses actual, unscaled returns.",
+    dataNote:"Data: US large and small stocks, corporate and government bonds, T-Bills, January 1926 to September 2020. Past returns do not predict future returns.",
+    xTime:"Date", yGrowth:"Value of 100 invested", xHist:"Calendar-year return", yHist:"Number of years",
+    yRollReturn:"Annualized 5-year return", yRollSharpe:"5-year Sharpe ratio",
+    xFrontier:"Annualized volatility", yFrontier:"Annualized mean return",
+    frontier:"Long-only efficient frontier", assetClasses:"Asset classes",
+    needYears:"Please choose a period of at least six years for rolling statistics.",
+    needPeriod:"Please choose a period of at least two years.",
+    errLoad:"The dashboard could not be loaded. Please reload the page.", errCompute:"The calculation failed. Please change an input or reload the page.",
+    loading:"Initializing WebR…", loadData:"Loading return data…", loadR:"Loading R functions…"
+  },
+  de: {
+    title:"Investment-Dashboard", gWeights:"Portfoliogewichte", lCash:"Cash einbeziehen (T-Bills)",
+    gSettings:"Einstellungen", lStart:"Startjahr", lEnd:"Endjahr", lReb:"Rebalancing",
+    oMonths:"Monatlich", oQuarters:"Quartalsweise", oYears:"Jährlich", lCost:"Transaktionskosten",
+    lReal:"Inflationsbereinigte (reale) Renditen", lRisk:"Grafiken auf mein Portfoliorisiko skalieren",
+    gBench:"Vergleichsportfolios", lLarge:"100 % Large-Cap-Aktien", lSixty:"60/40 (Large-Cap-Aktien / Staatsanleihen)", lEqual:"Gleichgewichtet",
+    tabGrowth:"Wachstum von 100", tabHist:"Jahresrenditen", tabRollReturn:"Rollierende 5J-Rendite",
+    tabRollSharpe:"Rollierende 5J-Sharpe", tabFrontier:"Effizienzkurve", lLog:"Log-Skala", csv:"CSV exportieren",
+    assets:["Large-Cap-Aktien","Small-Cap-Aktien","Unternehmensanleihen","Staatsanleihen","T-Bills"],
+    names:{custom:"Ihr Portfolio",large:"100 % Aktien",sixty:"60/40",equal:"Gleichgewichtet"},
+    statistic:"Kennzahl",
+    stats:{annReturn:"Annualisierte Rendite",annSd:"Annualisierte Volatilität",sharpe:"Sharpe Ratio (ggü. T-Bills)",maxDD:"Maximaler Drawdown",var95:"Monatlicher VaR (95 %)",skew:"Schiefe",kurt:"Exzess-Kurtosis"},
+    better:"Grün / ▲: besser als Ihr Portfolio. Rot / ▼: schlechter.",
+    scaledNote:" Die Tabelle nutzt immer die tatsächlichen, unskalierten Renditen.",
+    dataNote:"Daten: US-Aktien (Large und Small Cap), Unternehmens- und Staatsanleihen, T-Bills, Januar 1926 bis September 2020. Vergangene Renditen sagen zukünftige nicht voraus.",
+    xTime:"Datum", yGrowth:"Wert von 100 investierten Einheiten", xHist:"Rendite im Kalenderjahr", yHist:"Anzahl Jahre",
+    yRollReturn:"Annualisierte 5-Jahres-Rendite", yRollSharpe:"5-Jahres-Sharpe-Ratio",
+    xFrontier:"Annualisierte Volatilität", yFrontier:"Annualisierte mittlere Rendite",
+    frontier:"Effizienzkurve (ohne Leerverkäufe)", assetClasses:"Anlageklassen",
+    needYears:"Bitte wählen Sie für rollierende Kennzahlen mindestens sechs Jahre.",
+    needPeriod:"Bitte wählen Sie einen Zeitraum von mindestens zwei Jahren.",
+    errLoad:"Das Dashboard konnte nicht geladen werden. Bitte laden Sie die Seite neu.", errCompute:"Die Berechnung ist fehlgeschlagen. Bitte ändern Sie eine Eingabe oder laden Sie die Seite neu.",
+    loading:"WebR wird gestartet…", loadData:"Renditedaten werden geladen…", loadR:"R-Funktionen werden geladen…"
+  }
+};
+const T = I18N[lang];
+const $ = id => document.getElementById(id);
+["title","gWeights","lCash","gSettings","lStart","lEnd","lReb","oMonths","oQuarters","oYears","lCost","lReal","lRisk",
+ "gBench","lLarge","lSixty","lEqual","tabGrowth","tabHist","tabRollReturn","tabRollSharpe","tabFrontier","lLog","csv","dataNote"
+].forEach(id => { $(id).textContent = T[id]; });
+
+$("debugBox").style.display = debugMode ? "block" : "none";
+const log = x => { if (debugMode) $("debug").textContent = typeof x === "string" ? x : JSON.stringify(x, null, 2).slice(0, 4000); };
+
+function unwrap(x) {
+  if (x == null || typeof x !== "object") return x;
+  if (x.type === "list") { const o = {}; (x.names || []).forEach((k, i) => o[k] = unwrap(x.values[i])); return o; }
+  if (Array.isArray(x.values)) return x.values.length === 1 ? unwrap(x.values[0]) : x.values.map(unwrap);
+  return x;
+}
+const arr = x => Array.isArray(x) ? x : [x];
+const fmt = (x, digits = 0) => Number(x).toLocaleString(locale, { minimumFractionDigits: digits, maximumFractionDigits: digits });
+const pct = (x, digits = 1) => fmt(x * 100, digits) + (lang === "de" ? " %" : "%");
+
+/* ── Controls ─────────────────────────────────────────────────── */
+const DEFAULT_WEIGHTS = [40, 10, 20, 20, 10];
+$("weightRows").innerHTML = T.assets.map((name, i) => `
+  <div class="row"><label class="name" for="w${i}">${name}</label>
+    <input id="w${i}" type="range" min="0" max="100" step="1" value="${DEFAULT_WEIGHTS[i]}">
+    <div class="val" id="w${i}Lbl"></div></div>`).join("");
+const wEls = [0, 1, 2, 3, 4].map(i => $(`w${i}`));
+
+for (let y = 1926; y <= 2020; y++) {
+  $("startYear").add(new Option(y, y));
+  $("endYear").add(new Option(y, y));
+}
+$("startYear").value = "1926";
+$("endYear").value = "2020";
+
+function currentWeights() {
+  const useCash = $("useCash").checked;
+  const raw = wEls.map((el, i) => (i === 4 && !useCash) ? 0 : +el.value);
+  const total = raw.reduce((a, b) => a + b, 0);
+  if (total > 0) return raw.map(v => v / total);
+  const n = useCash ? 5 : 4;
+  return raw.map((_, i) => (i === 4 && !useCash) ? 0 : 1 / n);
+}
+function refreshLabels() {
+  $("w4").disabled = !$("useCash").checked;
+  currentWeights().forEach((v, i) => { $(`w${i}Lbl`).textContent = pct(v, 0); });
+  $("costLbl").textContent = pct(+$("cost").value, 2);
+}
+
+/* ── Charts ───────────────────────────────────────────────────── */
+const COLORS = { custom: "#1e73be", large: "#e53935", sixty: "#43a047", equal: "#ff9800" };
+let chart = null;
+let currentTab = "growth";
+let lastResult = null;
+
+function setLegend(items) {
+  $("legendBox").innerHTML = items.map(([c, label]) =>
+    `<span><span class="dot" style="background:${c}"></span>${label}</span>`).join("");
+}
+function showMessage(text) {
+  $("chartMsg").textContent = text || "";
+  $("chartMsg").style.display = text ? "flex" : "none";
+  $("chart").style.visibility = text ? "hidden" : "visible";
+}
+function lineSets(ids, source) {
+  return ids.map(id => ({
+    label: T.names[id], data: arr(source[id]), borderColor: COLORS[id], backgroundColor: COLORS[id],
+    borderWidth: id === "custom" ? 2.5 : 1.5, pointRadius: 0, fill: false
+  }));
+}
+function timeTicks(labels) {
+  return {
+    maxTicksLimit: 12, maxRotation: 0,
+    callback(value) {
+      const s = this.getLabelForValue(value);
+      return labels.length > 120 ? s.slice(0, 4) : s;
+    }
+  };
+}
+function logTick(v) {
+  const power = 10 ** Math.floor(Math.log10(v));
+  const m = v / power;
+  return [1, 2, 5].some(k => Math.abs(m - k) < 1e-6) ? fmt(v) : "";
+}
+function config(type, labels, datasets, xTitle, yTitle, extra = {}) {
+  return {
+    type, data: { labels, datasets },
+    options: {
+      responsive: true, maintainAspectRatio: false, animation: false,
+      interaction: extra.interaction || { mode: "index", intersect: false },
+      scales: {
+        x: { title: { display: true, text: xTitle }, ...(extra.x || {}) },
+        y: { title: { display: true, text: yTitle }, ...(extra.y || {}) }
+      },
+      plugins: { legend: { display: false }, tooltip: extra.tooltip || {} },
+      elements: { line: { tension: 0 } }
+    }
+  };
+}
+function buildConfig(r) {
+  const ids = arr(r.ids);
+  const seriesTip = f => ({ callbacks: { label: c => `${c.dataset.label}: ${f(c.parsed.y)}` } });
+  if (currentTab === "growth") {
+    const labels = arr(r.labels);
+    const log10 = $("logScale").checked;
+    return config("line", labels, lineSets(ids, r.growth), T.xTime, T.yGrowth, {
+      x: { ticks: timeTicks(labels) },
+      y: log10 ? { type: "logarithmic", ticks: { callback: logTick, autoSkip: false } } : { ticks: { callback: v => fmt(v) } },
+      tooltip: seriesTip(v => fmt(v, 1))
+    });
+  }
+  if (currentTab === "hist") {
+    const lows = arr(r.histLo);
+    const labels = lows.map(lo => `${fmt(lo * 100)} … ${fmt(lo * 100 + 10)}%`);
+    const sets = ids.map(id => ({ label: T.names[id], data: arr(r.hist[id]), backgroundColor: COLORS[id] }));
+    return config("bar", labels, sets, T.xHist, T.yHist, {
+      y: { beginAtZero: true, ticks: { precision: 0 } }, x: { ticks: { maxRotation: 45, minRotation: 0 } }
+    });
+  }
+  if (currentTab === "rollReturn" || currentTab === "rollSharpe") {
+    const labels = arr(r.rollingLabels);
+    const isReturn = currentTab === "rollReturn";
+    const source = isReturn ? r.rollReturn : r.rollSharpe;
+    return config("line", labels, lineSets(ids, source), T.xTime, isReturn ? T.yRollReturn : T.yRollSharpe, {
+      x: { ticks: timeTicks(labels) },
+      y: { ticks: { callback: v => isReturn ? pct(v, 0) : fmt(v, 1) } },
+      tooltip: seriesTip(v => isReturn ? pct(v, 1) : fmt(v, 2))
+    });
+  }
+  const f = r.frontier;
+  const line = arr(f.sd).map((x, i) => ({ x, y: arr(f.mean)[i] }));
+  const assetSd = arr(f.assetSd);
+  const assets = assetSd.map((x, i) => ({ x, y: arr(f.assetMean)[i], name: T.assets[i] }));
+  const sets = [
+    { label: T.frontier, data: line, showLine: true, borderColor: "#555", backgroundColor: "#555", borderWidth: 2, pointRadius: 0 },
+    { label: T.assetClasses, data: assets, backgroundColor: "#9e9e9e", borderColor: "#9e9e9e", pointRadius: 5, pointStyle: "rectRot" },
+    ...ids.map(id => ({
+      label: T.names[id], data: [{ x: r.pointSd[id], y: r.pointMean[id] }],
+      backgroundColor: COLORS[id], borderColor: "#fff", borderWidth: 1, pointRadius: id === "custom" ? 8 : 6
+    }))
+  ];
+  return config("scatter", undefined, sets, T.xFrontier, T.yFrontier, {
+    interaction: { mode: "nearest", intersect: true },
+    x: { type: "linear", ticks: { callback: v => pct(v, 0) } },
+    y: { ticks: { callback: v => pct(v, 0) } },
+    tooltip: { callbacks: { label: c => `${c.raw.name || c.dataset.label}: ${T.xFrontier} ${pct(c.parsed.x, 1)}, ${T.yFrontier} ${pct(c.parsed.y, 1)}` } }
+  });
+}
+function draw() {
+  if (!lastResult) return;
+  const r = lastResult;
+  if (chart) { chart.destroy(); chart = null; }
+  $("logWrap").style.visibility = currentTab === "growth" ? "visible" : "hidden";
+  const needsRolling = currentTab === "rollReturn" || currentTab === "rollSharpe";
+  if (needsRolling && !r.hasRolling) {
+    showMessage(T.needYears);
+  } else {
+    showMessage("");
+    chart = new Chart($("chart").getContext("2d"), buildConfig(r));
+  }
+  const ids = arr(r.ids);
+  const items = ids.map(id => [COLORS[id], T.names[id]]);
+  if (currentTab === "frontier") items.unshift(["#555", T.frontier], ["#9e9e9e", T.assetClasses]);
+  setLegend(items);
+}
+
+/* ── Statistics table ─────────────────────────────────────────── */
+const STAT_ROWS = [
+  ["annReturn", v => pct(v, 2), 1], ["annSd", v => pct(v, 2), -1], ["sharpe", v => fmt(v, 2), 1],
+  ["maxDD", v => pct(v, 1), 1], ["var95", v => pct(v, 2), 1], ["skew", v => fmt(v, 2), 1], ["kurt", v => fmt(v, 2), -1]
+];
+function renderTable(r) {
+  const ids = arr(r.ids);
+  const head = `<thead><tr><th>${T.statistic}</th>${ids.map(id => `<th>${T.names[id]}</th>`).join("")}</tr></thead>`;
+  const body = STAT_ROWS.map(([key, format, direction]) => {
+    const base = r.stats.custom[key];
+    const cells = ids.map(id => {
+      const v = r.stats[id][key];
+      if (id === "custom" || Math.abs(v - base) < 1e-10) return `<td>${format(v)}</td>`;
+      const better = (v - base) * direction > 0;
+      return `<td class="${better ? "better" : "worse"}">${better ? "▲" : "▼"} ${format(v)}</td>`;
+    }).join("");
+    return `<tr><td>${T.stats[key]}</td>${cells}</tr>`;
+  }).join("");
+  $("stats").innerHTML = head + `<tbody>${body}</tbody>`;
+  $("tableNote").textContent = T.better + ($("riskAdjust").checked ? T.scaledNote : "");
+}
+function exportCsv() {
+  if (!lastResult) return;
+  const r = lastResult, ids = arr(r.ids);
+  const quote = s => `"${String(s).replace(/"/g, '""')}"`;
+  const lines = [[T.statistic, ...ids.map(id => T.names[id])].map(quote).join(",")];
+  STAT_ROWS.forEach(([key]) => {
+    lines.push([quote(T.stats[key]), ...ids.map(id => Number(r.stats[id][key]).toFixed(6))].join(","));
+  });
+  const url = URL.createObjectURL(new Blob([lines.join("\r\n") + "\r\n"], { type: "text/csv;charset=utf-8" }));
+  const a = Object.assign(document.createElement("a"), { href: url, download: "usave_portfolio_statistics.csv" });
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+/* ── WebR ─────────────────────────────────────────────────────── */
+const webr = new WebR();
+const COLS = ["LargeStocks", "SmallStocks", "CorporateBonds", "GovernmentBonds", "TBill", "Inflation"];
+const bytes = typed => new Uint8Array(typed.buffer);
+
+async function fetchOk(path, read) {
+  const response = await fetch(path);
+  if (!response.ok) throw new Error(`${path}: HTTP ${response.status}`);
+  return response[read]();
+}
+async function init() {
+  $("spinnerMsg").textContent = T.loading;
+  await webr.init();
+  $("spinnerMsg").textContent = T.loadData;
+  const [nominal, real] = await Promise.all([
+    fetchOk("./assets/data/totalReturn.json", "json"),
+    fetchOk("./assets/data/totalReturnInflationAdjusted.json", "json")
+  ]);
+  const n = nominal.Date.length;
+  const ym = Float64Array.from(nominal.Date, d => +d.slice(0, 4) * 100 + +d.slice(5, 7));
+  const flatten = source => {
+    const out = new Float64Array(n * COLS.length);
+    COLS.forEach((c, j) => out.set(source[c], j * n));
+    return out;
+  };
+  await webr.FS.writeFile("/tmp/ym.bin", bytes(ym));
+  await webr.FS.writeFile("/tmp/nominal.bin", bytes(flatten(nominal)));
+  await webr.FS.writeFile("/tmp/real.bin", bytes(flatten(real)));
+  $("spinnerMsg").textContent = T.loadR;
+  await webr.evalRVoid(await fetchOk("./r/dashboard.R", "text"));
+  await webr.evalRVoid(`dashboard_load("/tmp/ym.bin", "/tmp/nominal.bin", "/tmp/real.bin", ${n})`);
+  log("WebR ready.");
+}
+
+const rBool = id => $(id).checked ? "TRUE" : "FALSE";
+async function compute() {
+  refreshLabels();
+  const call = `dashboard(weights=c(${currentWeights().join(",")}), startYear=${+$("startYear").value}, endYear=${+$("endYear").value}, ` +
+    `rebalance="${$("rebalance").value}", real=${rBool("real")}, cost=${+$("cost").value}, ` +
+    `useLarge=${rBool("useLarge")}, useSixty=${rBool("useSixty")}, useEqual=${rBool("useEqual")}, ` +
+    `useCash=${rBool("useCash")}, riskAdjust=${rBool("riskAdjust")}, frontier=${currentTab === "frontier" ? "TRUE" : "FALSE"})`;
+  try {
+    const robj = await webr.evalR(call);
+    const js = unwrap(await robj.toJs());
+    webr.destroy(robj);
+    if (!js.ok) {
+      lastResult = null;
+      if (chart) { chart.destroy(); chart = null; }
+      showMessage(T.needPeriod);
+      $("legendBox").innerHTML = ""; $("stats").innerHTML = ""; $("tableNote").textContent = "";
+      return;
+    }
+    lastResult = js.results;
+    renderTable(js.results);
+    draw();
+    log(js.inputs);
+  } catch (e) {
+    lastResult = null;
+    showMessage(T.errCompute);
+    log("Compute error: " + (e?.message || e));
+  }
+}
+
+// Inputs arrive faster than R can answer while a slider is dragged: run one
+// calculation at a time and always finish with the newest input.
+let running = false, pending = false;
+async function schedule() {
+  refreshLabels();
+  if (running) { pending = true; return; }
+  running = true;
+  do { pending = false; await compute(); } while (pending);
+  running = false;
+}
+
+document.querySelectorAll(".tab").forEach(tab => {
+  tab.addEventListener("click", () => {
+    document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+    tab.classList.add("active");
+    currentTab = tab.dataset.tab;
+    if (currentTab === "frontier" && lastResult && !lastResult.frontier?.sd) schedule();
+    else draw();
+  });
+});
+$("logScale").addEventListener("change", draw);
+$("csv").addEventListener("click", exportCsv);
+[...wEls, $("cost")].forEach(el => el.addEventListener("input", schedule));
+["useCash", "startYear", "endYear", "rebalance", "real", "riskAdjust", "useLarge", "useSixty", "useEqual"]
+  .forEach(id => $(id).addEventListener("change", schedule));
+
+refreshLabels();
+try {
+  await init();
+  $("spinner").style.display = "none";
+  await schedule();
+} catch (e) {
+  $("spinnerRing").style.display = "none";
+  $("spinnerMsg").textContent = T.errLoad;
+  log("Init error: " + (e?.message || e));
+}
+</script>
+</body>
+</html>
